@@ -17,13 +17,11 @@ import org.springframework.web.bind.annotation.ResponseBody;
 public class UsersController {
     @Autowired
     private UsersService usersService;
-    private static int id = 0;
 
     @GetMapping("/adduser")
     @ResponseBody
     public String addUser(){
         Users user = new Users();
-        user.setId(id++);
         user.setName("Jimmy");
         usersService.insertUser(user);
         return user.toString();
@@ -40,9 +38,8 @@ public class UsersController {
     @RequestMapping("/getallusers")
     public String getAllUser(Model model){
         List<Users> usersList = usersService.selectAllUsers();
-        for(Users i : usersList){
-            model.addAttribute("user"+i.getId().toString(), i);
-        }
+        
+        model.addAttribute("userslist",usersList);
         return "users";
     }
 }

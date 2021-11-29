@@ -1,9 +1,10 @@
 package com.project.javaweb.pojo;
 
 import java.io.Serializable;
+import java.util.Date;
 
 import lombok.Data;
-import net.sf.jsqlparser.expression.DateTimeLiteralExpression.DateTime;
+
 
 @Data
 public class Files implements Serializable{
@@ -12,8 +13,8 @@ public class Files implements Serializable{
     private String type;
     private String tag;
     private Integer ownerid;
-    private DateTime createtime;
-    private DateTime updatetime;
+    private Date createtime;
+    private Date updatetime;
     private String ispublic;
     private Integer srcid;
 }

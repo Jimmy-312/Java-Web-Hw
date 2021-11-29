@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html xmlns="http://www.thymeleaf.org">
+
+<head>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/css/bootstrap.min.css"
+        integrity="sha384-zCbKRCUGaJDkqS1kPbPd7TveP5iyJE0EjAuZQTgFLD2ylzuqKfdKlfG/eSrtxUkn" crossorigin="anonymous">
+
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js"
+        integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"
+        integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/js/bootstrap.min.js"
+        integrity="sha384-VHvPCCyXqtD5DqJeNxl2dtTyhF78xXNXdkwX1CZeRusQfRKp+tA7hAShOK/B/fQ2"
+        crossorigin="anonymous"></script>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.1/font/bootstrap-icons.css">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <title>My Files</title>
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <a class="navbar-brand" href="/home">
+            <i class="bi bi-folder2" width="30" height="30"></i>
+            JFiles</a>
+
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item active">
+                    <a class="nav-link" href="/home">Home <span class="sr-only">(current)</span></a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Public </a>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                        data-toggle="dropdown" aria-expanded="false">
+                        Me
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <a class="dropdown-item" href="#">Edit Profile</a>
+                        <a class="dropdown-item" href="#">Change Password</a>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" href="#">Log Out</a>
+                    </div>
+                </li>
+            </ul>
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item active">
+                    <a class="nav-link">Jimmy <span class="sr-only">(current)</span></a>
+                </li>
+            </ul>
+
+            <form class="form-inline my-2 my-lg-0">
+                <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+                <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+            </form>
+        </div>
+    </nav>
+
+
+    <div class="container-fluid" style="margin-top: 2%;">
+        <div class="row">
+            <div class="col-2">
+
+            </div>
+            <div class="col">
+                <div class="btn-group" role="group">
+                    <button id="btnGroupDrop1" type="button" class="btn btn-secondary dropdown-toggle"
+                        data-toggle="dropdown" aria-expanded="false">
+                        New File
+                    </button>
+                    <div class="dropdown-menu" aria-labelledby="btnGroupDrop1">
+                        <a class="dropdown-item" href="#" data-toggle="modal" data-target="#newbox"
+                            onclick="$('#addnameback').text('.docx')">Word File</a>
+                        <a class="dropdown-item" href="#" data-toggle="modal" data-target="#newbox"
+                            onclick="$('#addnameback').text('.xlsx')">Excel File</a>
+                        <a class="dropdown-item" href="#" data-toggle="modal" data-target="#newbox"
+                            onclick="$('#addnameback').text('.md')">Markdown File</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row" style="margin-top: 1%;">
+            <div class=col-2>
+
+            </div>
+
+            <div class="col">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>id</th>
+                            <th>name</th>
+                            <th>type</th>
+                            <th>tag</th>
+                            <th>ownerid</th>
+                            <th>public</th>
+                            <th>createtime</th>
+                            <th>updatetime</th>
+                            <th>srcid</th>
+                        </tr>
+                    </thead>
+                    <tr th:each="file : ${filelist}">
+                        <td th:text="${file.id}"></td>
+                        <td th:text="${file.name}"></td>
+                        <td th:text="${file.type}"></td>
+                        <td th:text="${file.tag}"></td>
+                        <td th:text="${file.ownerid}"></td>
+                        <td th:text="${file.ispublic}"></td>
+                        <td th:text="${file.createtime}"></td>
+                        <td th:text="${file.updatetime}"></td>
+                        <td th:text="${file.srcid}"></td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+
+
+
+    <div class="modal fade" id="newbox" tabindex="-1" aria-labelledby="addbox" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">New File</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body" id="newboxbody">
+                    <div class="input-group mb-3">
+                        <input type="text" class="form-control" placeholder="Enter File Name"
+                            aria-label="Enter File Name" aria-describedby="addnameback">
+                        <div class="input-group-append">
+                            <span class="input-group-text" id="addnameback">.docx</span>
+                        </div>
+                    </div>
+                    <div class="input-group mb-3">
+                        <div class="input-group-append">
+                            <span class="input-group-text">Tag</span>
+                        </div>
+                        <input id="tags1" type="text" class="form-control" placeholder="Enter the tag"
+                            aria-label="Recipient's username" aria-describedby="button-addon2" onkeyup="$.checktag(1)"> 
+                        <div class="input-group-append" >
+                            <button class="btn btn-outline-secondary" type="button" id="tagadd1"
+                                onclick="$.addtags()" disabled>Add</button>
+                        </div>
+                        <div class="input-group-append" >
+                            <button class="btn btn-outline-secondary" type="button" id="tagdel1"
+                                onclick="$.deltags()" disabled>Del</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary">Create</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        i = 1
+        $.checktag=function(t){
+            console.log($("#tags" + t).val())
+            if($("#tags" + t).val()!=""){
+                $("#tagadd"+t).removeAttr("disabled")
+            }else{
+                $("#tagadd"+t).attr("disabled","")
+            }
+        }
+        $.addtags = function () {
+            if (i<5) {
+                i++
+                
+                $.tags = '<div class="input-group mb-3" id="tag'+i+'">\
+                        <div class="input-group-append">\
+                            <span class="input-group-text">Tag</span>\
+                        </div>\
+                        <input type="text" id="tags'+i+'" class="form-control" placeholder="Enter the tag" aria-label="Recipient'+ "'" + 's username" aria-describedby="button-addon2" onkeyup="$.checktag('+i+')">\
+                        <div class="input-group-append" >\
+                            <button class="btn btn-outline-secondary" type="button" id="tagadd'+i+'""\
+                                onclick="$.addtags()" disabled>Add</button>\
+                        </div>\
+                        <div class="input-group-append" >\
+                            <button class="btn btn-outline-secondary" type="button" id="tagdel'+i+'"\
+                                onclick="$.deltags()">Del</button>\
+                        </div>\
+                    </div>'
+                $('#newboxbody').append($.tags)
+                $("#tags"+(i-1)).attr("readonly","")
+                $("#tagdel"+(i-1)).attr("disabled","")
+                $("#tagadd"+(i-1)).attr("disabled","")
+            }
+            if(i==5){
+                $("#tagadd"+5).attr("disabled","")
+            }
+        }
+
+        $.deltags = function () {
+            if(i==1){
+                return
+            }
+            $("#tag"+i).remove()
+            $("#tags"+(i-1)).removeAttr("readonly")
+            if(i>2){
+                $("#tagdel"+(i-1)).removeAttr("disabled")
+            }
+            
+            $("#tagadd"+(i-1)).removeAttr("disabled")
+            i--
+        }
+    </script>
+</body>
+
+</html>

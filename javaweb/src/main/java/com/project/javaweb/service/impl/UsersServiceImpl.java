@@ -25,4 +25,8 @@ public class UsersServiceImpl implements UsersService {
         return usersMapper.selectList(null);
     }
 
+    public void deleteById(int id){
+        usersMapper.deleteById(id);
+    }
+
 }

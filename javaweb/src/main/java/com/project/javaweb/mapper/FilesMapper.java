@@ -1,8 +1,8 @@
 package com.project.javaweb.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.project.javaweb.pojo.Users;
+import com.project.javaweb.pojo.Files;
 
-public interface UsersMapper extends BaseMapper<Users>{
+public interface FilesMapper extends BaseMapper<Files>{
     
 }
