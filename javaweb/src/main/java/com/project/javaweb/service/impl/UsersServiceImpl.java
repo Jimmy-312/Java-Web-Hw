@@ -22,7 +22,7 @@ public class UsersServiceImpl implements UsersService {
     }
 
     public List<Users> selectAllUsers(){
-        return usersMapper.selectAll();
+        return usersMapper.selectList(null);
     }
 
 }
