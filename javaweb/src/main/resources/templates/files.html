@@ -91,7 +91,7 @@
                 </div>
             </div>
         </div>
-
+        <p th:text="${test}"></p>
         <div class="row" style="margin-top: 1%;">
             <div class=col-2>
 
@@ -140,85 +140,88 @@
                     </button>
                 </div>
                 <div class="modal-body" id="newboxbody">
-                    <div class="input-group mb-3">
-                        <input type="text" class="form-control" placeholder="Enter File Name"
-                            aria-label="Enter File Name" aria-describedby="addnameback">
-                        <div class="input-group-append">
-                            <span class="input-group-text" id="addnameback">.docx</span>
+                    <form method="post" action="/addfile" id="newform">
+                        <div class="input-group mb-3">
+                            <input type="text" class="form-control" placeholder="Enter File Name"
+                                aria-label="Enter File Name" aria-describedby="addnameback" required>
+                            <div class="input-group-append">
+                                <span class="input-group-text" id="addnameback">.docx</span>
+                            </div>
                         </div>
-                    </div>
-                    <div class="input-group mb-3">
-                        <div class="input-group-append">
-                            <span class="input-group-text">Tag</span>
+                        <div class="input-group mb-3">
+                            <div class="input-group-append">
+                                <span class="input-group-text">Tag</span>
+                            </div>
+                            <input id="tags1" type="text" class="form-control" placeholder="Enter the tag"
+                                aria-label="Recipient's username" aria-describedby="button-addon2"
+                                onkeyup="$.checktag(1)">
+                            <div class="input-group-append">
+                                <button class="btn btn-outline-secondary" type="button" id="tagadd1"
+                                    onclick="$.addtags()" disabled>Add</button>
+                            </div>
+                            <div class="input-group-append">
+                                <button class="btn btn-outline-secondary" type="button" id="tagdel1"
+                                    onclick="$.deltags()" disabled>Del</button>
+                            </div>
                         </div>
-                        <input id="tags1" type="text" class="form-control" placeholder="Enter the tag"
-                            aria-label="Recipient's username" aria-describedby="button-addon2" onkeyup="$.checktag(1)"> 
-                        <div class="input-group-append" >
-                            <button class="btn btn-outline-secondary" type="button" id="tagadd1"
-                                onclick="$.addtags()" disabled>Add</button>
-                        </div>
-                        <div class="input-group-append" >
-                            <button class="btn btn-outline-secondary" type="button" id="tagdel1"
-                                onclick="$.deltags()" disabled>Del</button>
-                        </div>
-                    </div>
+                    </form>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary">Create</button>
+                    <button type="button" class="btn btn-primary" onclick="$('#')">Create</button>
                 </div>
             </div>
         </div>
     </div>
     <script>
         i = 1
-        $.checktag=function(t){
+        $.checktag = function (t) {
             console.log($("#tags" + t).val())
-            if($("#tags" + t).val()!=""){
-                $("#tagadd"+t).removeAttr("disabled")
-            }else{
-                $("#tagadd"+t).attr("disabled","")
+            if ($("#tags" + t).val() != "") {
+                $("#tagadd" + t).removeAttr("disabled")
+            } else {
+                $("#tagadd" + t).attr("disabled", "")
             }
         }
         $.addtags = function () {
-            if (i<5) {
+            if (i < 5) {
                 i++
-                
-                $.tags = '<div class="input-group mb-3" id="tag'+i+'">\
+
+                $.tags = '<div class="input-group mb-3" id="tag' + i + '">\
                         <div class="input-group-append">\
                             <span class="input-group-text">Tag</span>\
                         </div>\
-                        <input type="text" id="tags'+i+'" class="form-control" placeholder="Enter the tag" aria-label="Recipient'+ "'" + 's username" aria-describedby="button-addon2" onkeyup="$.checktag('+i+')">\
+                        <input type="text" id="tags'+ i + '" class="form-control" placeholder="Enter the tag" aria-label="Recipient' + "'" + 's username" aria-describedby="button-addon2" onkeyup="$.checktag(' + i + ')">\
                         <div class="input-group-append" >\
-                            <button class="btn btn-outline-secondary" type="button" id="tagadd'+i+'""\
+                            <button class="btn btn-outline-secondary" type="button" id="tagadd'+ i + '""\
                                 onclick="$.addtags()" disabled>Add</button>\
                         </div>\
                         <div class="input-group-append" >\
-                            <button class="btn btn-outline-secondary" type="button" id="tagdel'+i+'"\
+                            <button class="btn btn-outline-secondary" type="button" id="tagdel'+ i + '"\
                                 onclick="$.deltags()">Del</button>\
                         </div>\
                     </div>'
                 $('#newboxbody').append($.tags)
-                $("#tags"+(i-1)).attr("readonly","")
-                $("#tagdel"+(i-1)).attr("disabled","")
-                $("#tagadd"+(i-1)).attr("disabled","")
+                $("#tags" + (i - 1)).attr("readonly", "")
+                $("#tagdel" + (i - 1)).attr("disabled", "")
+                $("#tagadd" + (i - 1)).attr("disabled", "")
             }
-            if(i==5){
-                $("#tagadd"+5).attr("disabled","")
+            if (i == 5) {
+                $("#tagadd" + 5).attr("disabled", "")
             }
         }
 
         $.deltags = function () {
-            if(i==1){
+            if (i == 1) {
                 return
             }
-            $("#tag"+i).remove()
-            $("#tags"+(i-1)).removeAttr("readonly")
-            if(i>2){
-                $("#tagdel"+(i-1)).removeAttr("disabled")
+            $("#tag" + i).remove()
+            $("#tags" + (i - 1)).removeAttr("readonly")
+            if (i > 2) {
+                $("#tagdel" + (i - 1)).removeAttr("disabled")
             }
-            
-            $("#tagadd"+(i-1)).removeAttr("disabled")
+
+            $("#tagadd" + (i - 1)).removeAttr("disabled")
             i--
         }
     </script>

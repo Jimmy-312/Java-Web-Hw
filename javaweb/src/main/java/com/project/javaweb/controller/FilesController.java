@@ -6,6 +6,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.annotation.Validated;
 
 import com.project.javaweb.pojo.Files;
+import com.project.javaweb.service.FileSrcService;
 import com.project.javaweb.service.FilesService;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,10 +18,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class FilesController {
     @Autowired
     private FilesService filesService;
+    @Autowired
+    private FileSrcService fileSrcService;
 
     @RequestMapping("/home")
     public String getAllFiles(Model model){
         List<Files> filesList = filesService.selectAllFiles();
+        model.addAttribute("test",fileSrcService.selectAllFileSrc());
         model.addAttribute("filelist",filesList);
 
         return "files";
