@@ -15,8 +15,8 @@ public class FilesServiceImpl implements FilesService{
     @Autowired
     private FilesMapper mapper;
 
-    public int insert(Files obj){
-        return mapper.insert(obj);
+    public void insert(Files obj){
+        mapper.insert(obj);
     }
 
     public Files selectById(int id){

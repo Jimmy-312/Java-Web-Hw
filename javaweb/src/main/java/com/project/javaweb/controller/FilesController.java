@@ -17,7 +17,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -28,8 +27,8 @@ public class FilesController {
     private FilesService filesService;
     @Autowired
     private TagFileService tagFileService;
-    // @Autowired
-    // private FileSrcService fileSrcService;
+    @Autowired
+    private FileSrcService fileSrcService;
 
     @RequestMapping("/home")
     public String getAllFiles(Model model){
@@ -44,29 +43,33 @@ public class FilesController {
         Files file = new Files();
         TagFile tag = new TagFile();
         FileSrc src = new FileSrc();
-        Date now = new Date();
 
+        src.setSrc(content.get("name")+"."+content.get("type"));
 
+        if(content.get("ispublic")!=null){
+            file.setIspublic("Public");
+        }else{
+            file.setIspublic("Private");
+        }
+
+        fileSrcService.insert(src);
+        file.setSrcid(src.getId());
         file.setName(content.get("name"));
-        file.setIspublic(content.get("ispublic"));
         file.setType(content.get("type"));
-        file.setCreatetime(now);
-        file.setUpdatetime(now);
-        
-        file = filesService.selectById(filesService.insert(file));
-        System.out.println(file);
-
+        file.setCreatetime(new Date());
+        file.setUpdatetime(new Date());
+        filesService.insert(file);
+       
         tag.setFileid(file.getId());
 
-        
         for (Map.Entry<String,String> entry : content.entrySet()) {  
             if(entry.getKey().contains("tag")){
                 tag.setName(entry.getValue());
                 tagFileService.insert(tag);
+                tag.setId(tag.getId()+1);
             }
         }
         
-
         model.addAttribute("filelist",filesService.selectAll());
         return "files::file_table";
     }
