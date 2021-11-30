@@ -9,4 +9,5 @@ public interface UsersService {
     Users selectById(int id);
     List<Users> selectAll();
     void deleteById(int id);
+    Users selectByUserId(String userid);
 }
