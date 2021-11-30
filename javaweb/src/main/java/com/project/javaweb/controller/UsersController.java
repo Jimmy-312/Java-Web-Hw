@@ -23,7 +23,7 @@ public class UsersController {
     public String addUser(){
         Users user = new Users();
         user.setName("Jimmy");
-        usersService.insertUser(user);
+        usersService.insert(user);
         return user.toString();
     }
 
@@ -31,13 +31,13 @@ public class UsersController {
     @ResponseBody
     public String getUser(@PathVariable("id") int id){
         Users user = new Users();
-        user = usersService.selectUserById(id);
+        user = usersService.selectById(id);
         return user.toString();
     }
 
     @RequestMapping("/getallusers")
     public String getAllUser(Model model){
-        List<Users> usersList = usersService.selectAllUsers();
+        List<Users> usersList = usersService.selectAll();
         
         model.addAttribute("userslist",usersList);
         return "users";
