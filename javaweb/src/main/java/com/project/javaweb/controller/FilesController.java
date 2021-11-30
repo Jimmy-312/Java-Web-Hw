@@ -11,6 +11,7 @@ import com.project.javaweb.pojo.Files;
 import com.project.javaweb.pojo.TagFile;
 import com.project.javaweb.service.FileSrcService;
 import com.project.javaweb.service.FilesService;
+import com.project.javaweb.service.TagFileService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -25,6 +26,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 public class FilesController {
     @Autowired
     private FilesService filesService;
+    @Autowired
+    private TagFileService tagFileService;
     // @Autowired
     // private FileSrcService fileSrcService;
 
@@ -43,21 +46,24 @@ public class FilesController {
         FileSrc src = new FileSrc();
         Date now = new Date();
 
-        System.out.println(now);
+
+        file.setName(content.get("name"));
+        file.setIspublic(content.get("ispublic"));
+        file.setType(content.get("type"));
+        file.setCreatetime(now);
+        file.setUpdatetime(now);
+        
+        file = filesService.selectById(filesService.insert(file));
+        System.out.println(file);
+
+        tag.setFileid(file.getId());
+
+        
         for (Map.Entry<String,String> entry : content.entrySet()) {  
-            if(entry.getKey()=="name"){
-                file.setName(entry.getValue());
-            }
-            if(entry.getKey()=="ispublic"){
-                file.setIspublic(entry.getValue());
-            }
-            if(entry.getKey()=="type"){
-                file.setType(entry.getValue());
-            }
-            if(entry.getKey()=="tag"){
+            if(entry.getKey().contains("tag")){
                 tag.setName(entry.getValue());
+                tagFileService.insert(tag);
             }
-          
         }
         
 
