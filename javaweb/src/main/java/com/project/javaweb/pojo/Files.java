@@ -11,7 +11,6 @@ public class Files implements Serializable{
     private Integer id;
     private String name;
     private String type;
-    private String tag;
     private Integer ownerid;
     private Date createtime;
     private Date updatetime;

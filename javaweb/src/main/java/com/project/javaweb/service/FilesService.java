@@ -6,8 +6,8 @@ import com.project.javaweb.pojo.Files;
 
 public interface FilesService {
     void insert(Files file);
-    Files selectFileById(int id);
+    Files selectById(int id);
     void deleteById(int id);
-    List<Files> selectAllFiles();
+    List<Files> selectAll();
 
 }

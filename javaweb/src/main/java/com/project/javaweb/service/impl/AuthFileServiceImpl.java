@@ -10,21 +10,21 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 public class AuthFileServiceImpl implements AuthFileService{
     @Autowired
-    private AuthFileMapper authFileMapper;
+    private AuthFileMapper mapper;
 
-    public void insert(AuthFile authFile){
-        authFileMapper.insert(authFile);
+    public void insert(AuthFile obj){
+        mapper.insert(obj);
     }
 
-    public AuthFile selectFileById(int id){
-        return authFileMapper.selectById(id);
+    public AuthFile selectById(int id){
+        return mapper.selectById(id);
     }
 
     public void deleteById(int id){
-        authFileMapper.deleteById(id);
+        mapper.deleteById(id);
     }
 
-    public List<AuthFile> selectAllFiles(){
-        return authFileMapper.selectList(null);
+    public List<AuthFile> selectAll(){
+        return mapper.selectList(null);
     }
 }

@@ -12,21 +12,21 @@ import org.springframework.stereotype.Service;
 @Service
 public class FilesServiceImpl implements FilesService{
     @Autowired
-    private FilesMapper filesMapper;
+    private FilesMapper mapper;
 
-    public void insert(Files file){
-        filesMapper.insert(file);
+    public void insert(Files obj){
+        mapper.insert(obj);
     }
 
-    public Files selectFileById(int id){
-        return filesMapper.selectById(id);
+    public Files selectById(int id){
+        return mapper.selectById(id);
     }
 
     public void deleteById(int id){
-        filesMapper.deleteById(id);
+        mapper.deleteById(id);
     }
 
-    public List<Files> selectAllFiles(){
-        return filesMapper.selectList(null);
+    public List<Files> selectAll(){
+        return mapper.selectList(null);
     }
 }

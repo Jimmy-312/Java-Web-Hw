@@ -2,23 +2,23 @@ package com.project.javaweb.service.impl;
 
 import java.util.List;
 
-import com.project.javaweb.mapper.UsersMapper;
-import com.project.javaweb.pojo.Users;
-import com.project.javaweb.service.UsersService;
+import com.project.javaweb.mapper.TagFileMapper;
+import com.project.javaweb.pojo.TagFile;
+import com.project.javaweb.service.TagFileService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-public class UsersServiceImpl implements UsersService {
+public class TagFileServiceImpl implements TagFileService {
     @Autowired
-    private UsersMapper mapper;
+    private TagFileMapper mapper;
 
-    public void insert(Users obj){
+    public void insert(TagFile obj){
         mapper.insert(obj);
     }
 
-    public Users selectById(int id){
+    public TagFile selectById(int id){
         return mapper.selectById(id);
     }
 
@@ -26,8 +26,7 @@ public class UsersServiceImpl implements UsersService {
         mapper.deleteById(id);
     }
 
-    public List<Users> selectAll(){
+    public List<TagFile> selectAll(){
         return mapper.selectList(null);
     }
-
 }

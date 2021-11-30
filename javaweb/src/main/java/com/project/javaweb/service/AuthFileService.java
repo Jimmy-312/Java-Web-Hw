@@ -5,8 +5,8 @@ import java.util.List;
 import com.project.javaweb.pojo.AuthFile;
 
 public interface AuthFileService {
-    void insert(AuthFile file);
-    AuthFile selectFileById(int id);
+    void insert(AuthFile obj);
+    AuthFile selectById(int id);
     void deleteById(int id);
-    List<AuthFile> selectAllFiles();
+    List<AuthFile> selectAll();
 }

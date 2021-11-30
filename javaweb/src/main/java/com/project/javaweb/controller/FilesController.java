@@ -18,13 +18,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class FilesController {
     @Autowired
     private FilesService filesService;
-    @Autowired
-    private FileSrcService fileSrcService;
+    // @Autowired
+    // private FileSrcService fileSrcService;
 
     @RequestMapping("/home")
     public String getAllFiles(Model model){
         List<Files> filesList = filesService.selectAllFiles();
-        model.addAttribute("test",fileSrcService.selectAllFileSrc());
         model.addAttribute("filelist",filesList);
 
         return "files";

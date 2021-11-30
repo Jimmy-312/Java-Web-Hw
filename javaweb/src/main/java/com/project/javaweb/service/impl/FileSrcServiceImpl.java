@@ -12,21 +12,21 @@ import org.springframework.stereotype.Service;
 @Service
 public class FileSrcServiceImpl implements FileSrcService{
     @Autowired
-    private FileSrcMapper fileSrcMapper;
+    private FileSrcMapper mapper;
 
-    public void insert(FileSrc fileSrc){
-        fileSrcMapper.insert(fileSrc);
+    public void insert(FileSrc obj){
+        mapper.insert(obj);
     }
 
-    public FileSrc selectFileSrcById(int id){
-        return fileSrcMapper.selectById(id);
+    public FileSrc selectById(int id){
+        return mapper.selectById(id);
     }
 
     public void deleteById(int id){
-        fileSrcMapper.deleteById(id);
+        mapper.deleteById(id);
     }
 
-    public List<FileSrc> selectAllFileSrc(){
-        return fileSrcMapper.selectList(null);
+    public List<FileSrc> selectAll(){
+        return mapper.selectList(null);
     }
 }
