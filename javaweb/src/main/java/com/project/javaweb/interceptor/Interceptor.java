@@ -17,6 +17,6 @@ public class Interceptor implements WebMvcConfigurer {
   public void addInterceptors(InterceptorRegistry registry) {
 
       registry.addInterceptor(loginAuthInterceptor)
-              .excludePathPatterns("/login");
+              .excludePathPatterns("/login","/");
   }
 }

@@ -10,6 +10,7 @@ import lombok.Data;
 @Data
 public class FileSrc implements Serializable{
     @TableId(type = IdType.AUTO)
-    public Integer id;
-    public String src;
+    private Integer id;
+    private String src;
+    private Integer fileid;
 }

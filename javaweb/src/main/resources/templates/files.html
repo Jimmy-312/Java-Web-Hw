@@ -34,11 +34,12 @@
 
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav mr-auto">
-                <li class="nav-item active">
+                <li class="nav-item" th:classappend="${(page == 'home' ? 'active' : '')}">
                     <a class="nav-link" href="/home">Home <span class="sr-only">(current)</span></a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#">Public </a>
+                    <a class="nav-link" href="/public" th:classappend="${(page == 'public' ? 'active' : '')}">Public
+                    </a>
                 </li>
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
@@ -49,13 +50,13 @@
                         <a class="dropdown-item" href="#">Edit Profile</a>
                         <a class="dropdown-item" href="#">Change Password</a>
                         <div class="dropdown-divider"></div>
-                        <a class="dropdown-item" href="#">Log Out</a>
+                        <a class="dropdown-item" href="/logout">Log Out</a>
                     </div>
                 </li>
             </ul>
             <ul class="navbar-nav mr-auto">
                 <li class="nav-item active">
-                    <a class="nav-link">Jimmy <span class="sr-only">(current)</span></a>
+                    <a class="nav-link" th:text="${user.name}">Jimmy <span class="sr-only">(current)</span></a>
                 </li>
             </ul>
 
@@ -72,7 +73,7 @@
             <div class="col-2">
 
             </div>
-            <div class="col">
+            <div class="col-sm-8">
                 <div class="btn-group" role="group">
                     <button id="btnGroupDrop1" type="button" class="btn btn-secondary dropdown-toggle"
                         data-toggle="dropdown" aria-expanded="false">
@@ -87,6 +88,8 @@
                             onclick="$('#addnameback').text('.md');$('#addtype').val('md')">Markdown File</a>
                     </div>
                 </div>
+                <button type="button" class="btn btn-primary">Upload</button>
+                <button type="button" class="btn btn-danger" onclick="$('#fileform').submit()">Delete</button>
             </div>
         </div>
         <div class="row" style="margin-top: 1%;">
@@ -95,32 +98,39 @@
             </div>
 
             <div class="col">
-                <table th:fragment="file_table" class="table table-hover" id="file_table">
-                    <thead>
-                        <tr>
-                            <th>id</th>
-                            <th>name</th>
-                            <th>type</th>
-                            <th>tag</th>
-                            <th>ownerid</th>
-                            <th>public</th>
-                            <th>createtime</th>
-                            <th>updatetime</th>
-                            <th>srcid</th>
-                        </tr>
-                    </thead>
-                    <tr th:each="file : ${filelist}">
-                        <td th:text="${file.id}"></td>
-                        <td th:text="${file.name}"></td>
-                        <td th:text="${file.type}"></td>
-                        <td>wait</td>
-                        <td th:text="${file.ownerid}"></td>
-                        <td th:text="${file.ispublic}"></td>
-                        <td th:text="${file.createtime}"></td>
-                        <td th:text="${file.updatetime}"></td>
-                        <td th:text="${file.srcid}"></td>
-                    </tr>
-                </table>
+                <form id="fileform" method="POST" th:fragment="file_table">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th><input type="checkbox" id="checkAll"></th>
+                                <th>id</th>
+                                <th>name</th>
+                                <th>type</th>
+                                <th>tag</th>
+                                <th>ownerid</th>
+                                <th>public</th>
+                                <th>createtime</th>
+                                <th>updatetime</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tbody">
+
+                            <tr th:each="file,iterStat : ${filelist}">
+                                <td class="func"><input type="checkbox" th:value="${file.id}" th:name="'file'+${iterStat.index}">
+                                </td>
+                                <td th:text="${file.id}"></td>
+                                <td th:text="${file.name}"></td>
+                                <td th:text="${file.type}"></td>
+                                <td class="func">wait</td>
+                                <td th:text="${file.ownerid}"></td>
+                                <td th:text="${file.ispublic}"></td>
+                                <td th:text="${file.createtime}"></td>
+                                <td th:text="${file.updatetime}"></td>
+                            </tr>
+
+                        </tbody>
+                    </table>
+                </form>
             </div>
         </div>
     </div>
@@ -138,6 +148,7 @@
                 </div>
                 <div class="modal-body" id="newboxbody">
                     <form method="post" id="newfileform">
+                        <input type="hidden" name="page" th:value="${page}">
                         <div class="input-group mb-3">
                             <input type="text" id="tags0" onkeyup="checkVoid()" name="name" class="form-control"
                                 placeholder="Enter File Name" aria-label="Enter File Name"
@@ -153,7 +164,7 @@
                                 Public
                             </label>
                         </div>
-                        <div class="input-group mb-3">
+                        <div class="input-group mb-3" id="tag-group">
                             <div class="input-group-append">
                                 <span class="input-group-text">Tag</span>
                             </div>
@@ -161,11 +172,11 @@
                                 aria-label="Recipient's username" aria-describedby="button-addon2"
                                 onkeyup="$.checktag(1)">
                             <div class="input-group-append">
-                                <button class="btn btn-outline-secondary" type="button" id="tagadd1"
+                                <button class="btn btn-outline-secondary btnadd" type="button" id="tagadd1"
                                     onclick="$.addtags()" disabled>Add</button>
                             </div>
                             <div class="input-group-append">
-                                <button class="btn btn-outline-secondary" type="button" id="tagdel1"
+                                <button class="btn btn-outline-secondary  btndel" type="button" id="tagdel1"
                                     onclick="$.deltags()" disabled>Del</button>
                             </div>
                         </div>
@@ -180,6 +191,41 @@
         </div>
     </div>
     <script>
+        function reBind() {
+            $tbody = $("#tbody")
+            $("#checkAll").click(function (event) {
+                $tbody.find('input').prop('checked', $(this).prop('checked'));
+                event.stopPropagation();
+            });
+
+            $tbody.click(function (event) {
+                $("#checkAll").prop('checked', $(this).find('input:checked').length == $(this).children('tr').length ? true : false);
+                event.stopPropagation();
+            });
+            $td = $tbody.find("tr td").not(".func");
+            $td.click(function (event) {
+               $(this).parent().find("input").click();
+            });
+        }
+        reBind()
+
+        $("#fileform").submit(function (e) {
+
+            $.ajax({
+                type: "POST",
+                url: "/delfile",
+                data: $(this).serialize(),
+                success: function (result) {
+                    $("#fileform").html(result)
+                    reBind()
+                }
+            })
+            $("#fileform")[0].reset()
+            $("#checkAll").prop('checked', false);
+            return false
+        })
+
+
         $("#newfileform").submit(function (e) {
 
             $.ajax({
@@ -187,7 +233,7 @@
                 url: "/addfile",
                 data: $("#newfileform").serialize(),
                 success: function (result) {
-                    $("#file_table").html(result)
+                    $("#fileform").html(result)
                 }
             })
             $("#newfileform")[0].reset()
@@ -217,25 +263,22 @@
             }
         }
 
+
+
         $.addtags = function () {
             if (i < 5) {
                 i++
+                $tags = $("#tag-group").clone();
+                $tags.removeAttr("id")
+                $tags.attr("id", "tag" + i);
+                $tags.find("input").val("").removeAttr("readonly");
+                $tags.find("input").attr("id", "tags" + i);
+                $tags.find("input").attr("name", "tag" + i);
+                $tags.find("input").attr("onkeyup", "$.checktag(" + i + ")");
+                $tags.find("button.btnadd").attr("id", "tagadd" + i).attr("disabled", "");
+                $tags.find("button.btndel").attr("id", "tagdel" + i).removeAttr("disabled");
 
-                $.tags = '<div class="input-group mb-3" id="tag' + i + '">\
-                        <div class="input-group-append">\
-                            <span class="input-group-text">Tag</span>\
-                        </div>\
-                        <input type="text" id="tags'+ i + '" name="tag' + i + '" class="form-control" placeholder="Enter the tag" aria-label="Recipient' + "'" + 's username" aria-describedby="button-addon2" onkeyup="$.checktag(' + i + ')">\
-                        <div class="input-group-append" >\
-                            <button class="btn btn-outline-secondary" type="button" id="tagadd'+ i + '""\
-                                onclick="$.addtags()" disabled>Add</button>\
-                        </div>\
-                        <div class="input-group-append" >\
-                            <button class="btn btn-outline-secondary" type="button" id="tagdel'+ i + '"\
-                                onclick="$.deltags()">Del</button>\
-                        </div>\
-                    </div>'
-                $('#newfileform').append($.tags)
+                $('#newfileform').append($tags)
                 $("#tags" + (i - 1)).attr("readonly", "")
                 $("#tagdel" + (i - 1)).attr("disabled", "")
                 $("#tagadd" + (i - 1)).attr("disabled", "")

@@ -20,5 +20,4 @@ public class Files implements Serializable{
     private Date createtime;
     private Date updatetime;
     private String ispublic;
-    private Integer srcid;
 }

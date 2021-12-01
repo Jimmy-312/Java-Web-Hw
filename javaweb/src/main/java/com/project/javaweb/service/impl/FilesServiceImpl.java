@@ -28,6 +28,18 @@ public class FilesServiceImpl implements FilesService{
         wrapper.eq("name",name);
         return mapper.selectOne(wrapper);
     }
+    
+    public List<Files> selectByOwner(int ownerid){
+        QueryWrapper<Files> wrapper =new QueryWrapper<>();
+        wrapper.eq("ownerid",ownerid);
+        return mapper.selectList(wrapper);
+    }
+
+    public List<Files> selectByPublic(String ispublic){
+        QueryWrapper<Files> wrapper =new QueryWrapper<>();
+        wrapper.eq("ispublic",ispublic);
+        return mapper.selectList(wrapper);
+    }
 
     public void deleteById(int id){
         mapper.deleteById(id);

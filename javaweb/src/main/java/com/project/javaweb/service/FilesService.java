@@ -10,4 +10,6 @@ public interface FilesService {
     void deleteById(int id);
     List<Files> selectAll();
     Files selectByName(String name);
+    List<Files> selectByOwner(int ownerid);
+    List<Files> selectByPublic(String string);
 }

@@ -19,13 +19,16 @@ public class LoginController {
     private UsersService usersService;
 
     @RequestMapping("/login")
-    public String displayLogin() {
+    public String displayLogin(HttpSession session) {
+        if(session.getAttribute("user")!=null){
+            return "redirect:/home";
+        }
+
         return "login";
     }
 
     @RequestMapping("/logout")
     public String logout(HttpSession session,HttpServletRequest request) {
-        System.out.println(session.getAttribute("user"));
         session.removeAttribute("user");
         return "redirect:/login";
     }
@@ -36,6 +39,7 @@ public class LoginController {
 
         if(user!=null && userIn.getPasswd().equals(user.getPasswd())){
             session.setAttribute("user", user);
+            return "redirect:/home";
         }
 
         return "login";
