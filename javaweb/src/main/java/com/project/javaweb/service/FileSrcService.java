@@ -9,4 +9,5 @@ public interface FileSrcService {
     FileSrc selectById(int id);
     void deleteById(int id);
     List<FileSrc> selectAll();
+    void update(FileSrc obj);
 }

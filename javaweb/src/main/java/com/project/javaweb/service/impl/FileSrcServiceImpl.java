@@ -26,6 +26,10 @@ public class FileSrcServiceImpl implements FileSrcService{
         mapper.deleteById(id);
     }
 
+    public void update(FileSrc obj){
+        mapper.updateById(obj);
+    }
+
     public List<FileSrc> selectAll(){
         return mapper.selectList(null);
     }

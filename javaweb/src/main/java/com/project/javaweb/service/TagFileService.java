@@ -9,4 +9,5 @@ public interface TagFileService {
     TagFile selectById(int id);
     void deleteById(int id);
     List<TagFile> selectAll();
+    List<TagFile> selectByFileId(Integer fileId);
 }

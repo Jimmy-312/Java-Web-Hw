@@ -2,6 +2,7 @@ package com.project.javaweb.service.impl;
 
 import java.util.List;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.project.javaweb.mapper.TagFileMapper;
 import com.project.javaweb.pojo.TagFile;
 import com.project.javaweb.service.TagFileService;
@@ -22,6 +23,12 @@ public class TagFileServiceImpl implements TagFileService {
         return mapper.selectById(id);
     }
 
+    public List<TagFile> selectByFileId(Integer fileId){
+        QueryWrapper<TagFile> wrapper = new QueryWrapper<>();
+        wrapper.eq("fileid", fileId);
+        return mapper.selectList(wrapper);
+    }
+
     public void deleteById(int id){
         mapper.deleteById(id);
     }
@@ -29,4 +36,5 @@ public class TagFileServiceImpl implements TagFileService {
     public List<TagFile> selectAll(){
         return mapper.selectList(null);
     }
+
 }

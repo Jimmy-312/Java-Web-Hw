@@ -4,6 +4,8 @@ import java.util.List;
 
 import com.project.javaweb.pojo.Files;
 
+import org.springframework.web.multipart.MultipartFile;
+
 public interface FilesService {
     void insert(Files file);
     Files selectById(int id);
@@ -12,4 +14,5 @@ public interface FilesService {
     Files selectByName(String name);
     List<Files> selectByOwner(int ownerid);
     List<Files> selectByPublic(String string);
+    boolean uploadFile(String fileName, MultipartFile fileContent);
 }
