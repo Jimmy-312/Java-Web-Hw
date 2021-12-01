@@ -89,7 +89,7 @@
                     </div>
                 </div>
                 <button type="button" data-toggle="modal" data-target="#upbox" class="btn btn-primary">Upload</button>
-                <button type="button" class="btn btn-danger" onclick="$('#fileform').submit()">Delete</button>
+                <button type="button" class="btn btn-danger" id="filedelete_btn" onclick="$('#fileform').submit()" disabled>Delete</button>
             </div>
         </div>
         <div class="row" style="margin-top: 1%;">
@@ -246,11 +246,13 @@
             $("#checkAll").click(function (event) {
                 $tbody.find('input').prop('checked', $(this).prop('checked'));
                 event.stopPropagation();
+                $("#filedelete_btn").prop("disabled",$tbody.find('input:checked').length==0)
             });
 
             $tbody.click(function (event) {
-                $("#checkAll").prop('checked', $(this).find('input:checked').length == $(this).children('tr').length ? true : false);
+                $("#checkAll").prop('checked', $(this).find('input:checked').length == $(this).children('tr').length);
                 event.stopPropagation();
+                $("#filedelete_btn").prop("disabled",$(this).find('input:checked').length==0)
             });
             $td = $tbody.find("tr td").not(".func");
             $td.click(function (event) {
