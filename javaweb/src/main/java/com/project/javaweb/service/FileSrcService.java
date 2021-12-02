@@ -10,4 +10,5 @@ public interface FileSrcService {
     void deleteById(int id);
     List<FileSrc> selectAll();
     void update(FileSrc obj);
+    FileSrc selectByFileId(int fileid);
 }

@@ -15,4 +15,5 @@ public interface FilesService {
     List<Files> selectByOwner(int ownerid);
     List<Files> selectByPublic(String string);
     boolean uploadFile(String fileName, MultipartFile fileContent);
+    void update(Files files);
 }

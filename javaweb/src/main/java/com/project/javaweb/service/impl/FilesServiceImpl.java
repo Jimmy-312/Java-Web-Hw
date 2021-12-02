@@ -32,6 +32,12 @@ public class FilesServiceImpl implements FilesService {
         return mapper.selectOne(wrapper);
     }
 
+    public void update(Files files){
+        QueryWrapper<Files> wrapper = new QueryWrapper<>();
+        wrapper.eq("id", files.getId());
+        mapper.update(files, wrapper);
+    }
+
     public boolean uploadFile(String fileName, MultipartFile fileContent) {
         String filePath = "/cloudfiles/";
         File dest = new File(filePath + fileName);

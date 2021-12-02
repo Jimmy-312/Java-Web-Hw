@@ -12,23 +12,37 @@
     <script>
         tinymce.init({
             selector: '#editor',
-            height:1000,
+            height: 1000,
             menubar: "edit insert format table view",
             toolbar: 'undo redo|font|bold italic underline strikethrough |alignleft aligncenter alignright alignjustify|outdent indent|table link image',
             plugins: [
                 'link image imagetools table spellchecker lists'
             ],
             contextmenu: 'paste copy cut link image imagetools table spellchecker lists',
-            content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:14px }'
+            content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:14px }',
+            setup: function (editor) {
+                editor.on('keyup', function (e) {
+
+                    lastKeyupTime = e.timeStamp;
+                    setTimeout(function () {
+                        if (lastKeyupTime - e.timeStamp == 0) {
+                            $("#btnsave").click();
+                            console.log("save");
+                        }
+                    }, 1000);
+                });
+
+            },
         });
 
     </script>
 
 </head>
 
-<body>
+<body th:onload="loadFile([[${fileid}]])">
     <h1>FUcK Doc!!!</h1>
     <div id="editor"></div>
+    <button id='btnsave' type="hidden" th:onclick="saveFile([[${fileid}]])"></button>
 </body>
 
 <script>
@@ -44,24 +58,24 @@
     //     }
     // });
 
-    function loadFile(filename) {
+    function loadFile(fileid) {
         $.ajax({
             type: "POST",
-            url: '/editor/' + filename,
+            url: '/editor/' + fileid,
             success: function (e) {
                 //console.log(e)
-                $("#editor").html(e);
+                tinyMCE.editors["editor"].setContent(e)
             }
         });
     }
-    loadFile("test.jf")
-    function saveFile(filename) {
+
+    function saveFile(fileid) {
         var formData = new FormData();
         formData.append("content", tinyMCE.editors["editor"].getContent());
         console.log(formData);
         $.ajax({
             type: "POST",
-            url: '/save/' + filename,
+            url: '/save/' + fileid,
             contentType: false,
             processData: false,
             data: formData,
@@ -70,6 +84,7 @@
             }
         });
     }
+
 </script>
 <script>
 

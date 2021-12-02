@@ -1,17 +1,17 @@
 package com.project.javaweb.controller;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.Date;
 
+import com.project.javaweb.pojo.Files;
 import com.project.javaweb.service.FileSrcService;
 import com.project.javaweb.service.FilesService;
-import com.project.javaweb.util.Word2Html;
+import com.project.javaweb.util.FileRW;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -24,60 +24,40 @@ public class EditorController {
     private FilesService filesService;
     @Autowired
     private FileSrcService fileSrcService;
-    private String path = "D://";
 
     @RequestMapping("/editor")
     public String editor() {
         return "editor";
     }
 
-    @PostMapping("/editor/{filename}")
+    @PostMapping("/editor/{fileid}")
     @ResponseBody
-    public String editorLoad(@PathVariable("filename") String fileName) throws IOException {
+    public String editorLoad(@PathVariable("fileid") Integer fileId) throws IOException {
         String content;
-        File file = new File(path+fileName);
-        Long fileLength = file.length();
-        byte[] bData=new byte[fileLength.intValue()];
-        FileInputStream fis;
+        String fileName = fileSrcService.selectByFileId(fileId).getSrc();
 
-        try {
-            fis = new FileInputStream(file);
-            fis.read(bData);
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        content=FileRW.readFile(fileName);
 
-        content = new String(bData,"UTF-8");
-        //System.out.println(content);
-        // String htmlText = Word2Html.Doc2Html("D://", fileName);
-
-        // Word2Html.html2Word(htmlText, "321", "D://");
         return content;
     }
 
-    @PostMapping("/save/{filename}")
-    @ResponseBody
-    public String editorSave(@PathVariable("filename") String fileName,@RequestParam("content") String content) throws IOException {
-        //System.out.println(content);
-        File file = new File(path+fileName);
-        byte[] bData=content.getBytes("UTF-8");
-        FileOutputStream fis;
+    @GetMapping("/editor/{fileid}")
+    public String editorIndex(@PathVariable("fileid") Integer fileId,Model model) throws IOException {
+        model.addAttribute("fileid", fileId);
+        return "editor";
+    }
 
-        try {
-            fis = new FileOutputStream(file);
-            fis.write(bData);
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    @PostMapping("/save/{fileid}")
+    @ResponseBody
+    public String editorSave(@PathVariable("fileid") Integer fileId,@RequestParam("content") String content) throws IOException {
+        Files file = filesService.selectById(fileId);
+        String fileName = fileSrcService.selectByFileId(fileId).getSrc();
+
+        FileRW.writeFile(fileName,content);
+        file.setUpdatetime(new Date());
+        filesService.update(file);
 
         
-        // String htmlText = Word2Html.Doc2Html("D://", fileName);
-
-        // Word2Html.html2Word(htmlText, "321", "D://");
         return content;
     }
 }

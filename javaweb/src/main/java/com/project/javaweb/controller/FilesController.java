@@ -1,5 +1,6 @@
 package com.project.javaweb.controller;
 
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -17,6 +18,7 @@ import com.project.javaweb.pojo.Users;
 import com.project.javaweb.service.FileSrcService;
 import com.project.javaweb.service.FilesService;
 import com.project.javaweb.service.TagFileService;
+import com.project.javaweb.util.FileRW;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -56,7 +58,7 @@ public class FilesController {
     }
 
     @PostMapping("/addfile")
-    public String addNewFile(HttpSession session, @RequestParam Map<String, String> content, Model model) {
+    public String addNewFile(HttpSession session, @RequestParam Map<String, String> content, Model model) throws UnsupportedEncodingException {
         Files file = new Files();
         TagFile tag = new TagFile();
         FileSrc src = new FileSrc();
@@ -79,6 +81,8 @@ public class FilesController {
 
         src.setFileid(file.getId());
         fileSrcService.insert(src);
+
+        FileRW.writeFile(src.getSrc(), "");
 
         tag.setFileid(file.getId());
 
