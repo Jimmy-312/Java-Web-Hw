@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html xmlns="http://www.thymeleaf.org">
+
+<head>
+    <title>Editor</title>
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js"></script>
+    <script src="https://cdn.bootcdn.net/ajax/libs/tinymce/5.8.2/tinymce.min.js"></script>
+    <!-- <script src="https://cdn.tiny.cloud/1/50xr2p1vczd6fvfexslqb4kfyjetp9pcu4mr2pbdi86e3go3/tinymce/5/tinymce.min.js" referrerpolicy="origin"></script> -->
+    <!-- <script src="/static/js/tinymce.min.js" referrerpolicy="origin"></script> -->
+
+    <script>
+        tinymce.init({
+            selector: '#editor',
+        });
+    </script>
+
+</head>
+
+<body>
+    <h1>FUcK Doc!!!</h1>
+    <div id="editor"></div>
+</body>
+
+<script>
+    // $.ajax({
+    //     type: "POST",
+    //     url: '/editor/321',
+    //     data: '',
+    //     success: function (e) {
+    //         $con = $("<div></div>");
+    //         $con.html(e)
+    //         $("head").append($con.find("style"));
+    //         $("#editor").html($con.html());
+    //     }
+    // });
+
+    function loadFile(filename) {
+        $.ajax({
+            type: "POST",
+            url: '/editor/'+filename,
+            success: function (e) {
+                console.log(e)
+                $("#editor").html(e);
+            }
+        });
+    }
+    loadFile("test.jf")
+    function saveFile(filename) {
+        var formData = new FormData();
+        formData.append("content",tinyMCE.editors["editor"].getContent());
+        console.log(formData);
+        $.ajax({
+            type: "POST",
+            url: '/save/'+filename,
+            contentType:false,
+            processData:false,
+            data: formData,
+            success: function (e) {
+                //console.log("ss")
+            }
+        });
+    }
+</script>
+
+</html>
