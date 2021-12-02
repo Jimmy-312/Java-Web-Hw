@@ -50,7 +50,7 @@ public class EditorController {
         }
 
         content = new String(bData,"UTF-8");
-        System.out.println(content);
+        //System.out.println(content);
         // String htmlText = Word2Html.Doc2Html("D://", fileName);
 
         // Word2Html.html2Word(htmlText, "321", "D://");
@@ -60,7 +60,7 @@ public class EditorController {
     @PostMapping("/save/{filename}")
     @ResponseBody
     public String editorSave(@PathVariable("filename") String fileName,@RequestParam("content") String content) throws IOException {
-        System.out.println(content);
+        //System.out.println(content);
         File file = new File(path+fileName);
         byte[] bData=content.getBytes("UTF-8");
         FileOutputStream fis;

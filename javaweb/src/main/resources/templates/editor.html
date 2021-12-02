@@ -7,12 +7,21 @@
     <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js"></script>
     <script src="https://cdn.bootcdn.net/ajax/libs/tinymce/5.8.2/tinymce.min.js"></script>
     <!-- <script src="https://cdn.tiny.cloud/1/50xr2p1vczd6fvfexslqb4kfyjetp9pcu4mr2pbdi86e3go3/tinymce/5/tinymce.min.js" referrerpolicy="origin"></script> -->
-    <!-- <script src="/static/js/tinymce.min.js" referrerpolicy="origin"></script> -->
+    <!-- <script src="/static/js/tinymce.min.js"></script> -->
 
     <script>
         tinymce.init({
             selector: '#editor',
+            height:1000,
+            menubar: "edit insert format table view",
+            toolbar: 'undo redo|font|bold italic underline strikethrough |alignleft aligncenter alignright alignjustify|outdent indent|table link image',
+            plugins: [
+                'link image imagetools table spellchecker lists'
+            ],
+            contextmenu: 'paste copy cut link image imagetools table spellchecker lists',
+            content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:14px }'
         });
+
     </script>
 
 </head>
@@ -38,9 +47,9 @@
     function loadFile(filename) {
         $.ajax({
             type: "POST",
-            url: '/editor/'+filename,
+            url: '/editor/' + filename,
             success: function (e) {
-                console.log(e)
+                //console.log(e)
                 $("#editor").html(e);
             }
         });
@@ -48,19 +57,22 @@
     loadFile("test.jf")
     function saveFile(filename) {
         var formData = new FormData();
-        formData.append("content",tinyMCE.editors["editor"].getContent());
+        formData.append("content", tinyMCE.editors["editor"].getContent());
         console.log(formData);
         $.ajax({
             type: "POST",
-            url: '/save/'+filename,
-            contentType:false,
-            processData:false,
+            url: '/save/' + filename,
+            contentType: false,
+            processData: false,
             data: formData,
             success: function (e) {
                 //console.log("ss")
             }
         });
     }
+</script>
+<script>
+
 </script>
 
 </html>
