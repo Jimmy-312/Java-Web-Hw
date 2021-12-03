@@ -19,10 +19,15 @@
 
     <title>My Files</title>
     <meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+    <style>
+        .tagspan{
+            margin-left: 3px;
+        }
+    </style>
 </head>
 
 <body>
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <nav class="navbar navbar-expand-lg navbar-light bg-light sticky-top">
         <a class="navbar-brand" href="/home">
             <i class="bi bi-folder2" width="30" height="30"></i>
             JFiles</a>
@@ -82,13 +87,14 @@
                     <div class="dropdown-menu" aria-labelledby="btnGroupDrop1">
                         <a class="dropdown-item" href="#" data-toggle="modal" data-target="#newbox"
                             onclick="$('#addnameback').text('.jf');$('#addtype').val('jf')">JFile</a>
-                        
+
                         <a class="dropdown-item" href="#" data-toggle="modal" data-target="#newbox"
                             onclick="$('#addnameback').text('.md');$('#addtype').val('md')">Markdown File</a>
                     </div>
                 </div>
                 <button type="button" data-toggle="modal" data-target="#upbox" class="btn btn-primary">Upload</button>
-                <button type="button" class="btn btn-danger" id="filedelete_btn" onclick="$('#fileform').submit()" disabled>Delete</button>
+                <button type="button" class="btn btn-danger" id="filedelete_btn" onclick="$('#fileform').submit()"
+                    disabled>Delete</button>
             </div>
         </div>
         <div class="row" style="margin-top: 1%;">
@@ -115,30 +121,31 @@
                         <thead>
                             <tr>
                                 <th><input type="checkbox" id="checkAll"></th>
-                                <th>id</th>
-                                <th>name</th>
-                                <th>type</th>
-                                <th>tag</th>
-                                <th>ownerid</th>
+                                <th>Name</th>
+                                <th>Tags</th>
+                                <th>Type</th>
+                                <th>Owner</th>
                                 <th>public</th>
-                                <th>createtime</th>
-                                <th>updatetime</th>
+                                <th>Updatetime</th>
+                                <th>CreateTime</th>
+
                             </tr>
                         </thead>
                         <tbody id="tbody">
 
                             <tr th:each="file,iterStat : ${filelist}">
-                                <td class="func"><input type="checkbox" th:value="${file.id}"
-                                        th:name="'file'+${iterStat.index}">
+                                <td class="func">
+                                    <input type="checkbox" th:value="${file.id}" th:name="'file'+${iterStat.index}">
                                 </td>
-                                <td class="func" th:text="${file.id}" th:onclick="openFile([[${file.id}]])"></td>
-                                <td th:text="${file.name}"></td>
-                                <td th:text="${file.type}"></td>
-                                <td class="func">wait</td>
+                                <td class="func" th:text="${file.name}" th:onclick="openFile([[${file.id}]])"></td>
+                                <td class="func tag" th:classappend="${file.id}">
+
+                                </td>
+                                <td th:text="${file.type}=='jf'?'Document':'Markdown'"></td>
                                 <td th:text="${file.ownerid}"></td>
                                 <td th:text="${file.ispublic}"></td>
-                                <td th:text="${file.createtime}"></td>
-                                <td th:text="${file.updatetime}"></td>
+                                <td th:text="${#dates.format(file.updatetime,'yyyy-MM-dd HH:mm:ss')}"></td>
+                                <td th:text="${#dates.format(file.createtime,'yyyy-MM-dd HH:mm:ss')}"></td>
                             </tr>
 
                         </tbody>
@@ -225,8 +232,8 @@
                                 Public
                             </label>
                             <button class="btn btn-info" onclick="$('#upfile').click()">Select</button>
-                            <input name="file" type="file" class="form-control-file" id="upfile"
-                                accept=".jf,.md" style="display: none;">
+                            <input name="file" type="file" class="form-control-file" id="upfile" accept=".jf,.md"
+                                style="display: none;">
                         </form>
                     </div>
 
@@ -245,27 +252,62 @@
             $("#checkAll").click(function (event) {
                 $tbody.find('input').prop('checked', $(this).prop('checked'));
                 event.stopPropagation();
-                $("#filedelete_btn").prop("disabled",$tbody.find('input:checked').length==0)
+                $("#filedelete_btn").prop("disabled", $tbody.find('input:checked').length == 0)
             });
 
             $tbody.click(function (event) {
                 $("#checkAll").prop('checked', $(this).find('input:checked').length == $(this).children('tr').length);
                 event.stopPropagation();
-                $("#filedelete_btn").prop("disabled",$(this).find('input:checked').length==0)
+                $("#filedelete_btn").prop("disabled", $(this).find('input:checked').length == 0)
             });
             $td = $tbody.find("tr td").not(".func");
             $td.click(function (event) {
                 $(this).parent().find("input").click();
             });
+
+
         }
         reBind()
+        loadTags()
 
-        function openFile(fileid){
-            window.open("/editor/"+fileid);
+        function openFile(fileid) {
+            window.location.href = "/editor/" + fileid;
+        }
+
+        function loadTags() {
+            //console.log($tagspan.html())
+            var $len = $("#tbody").find(".tag").length;
+            for (var i = 0; i < $len; i++) {
+                var $files = $("#tbody").find(".tag");
+                var formData = new FormData();
+                var $tag = $files[i];
+                //console.log($tag)
+                formData.append("fileid", $tag.classList[2])
+                $.ajax({
+                    type: "POST",
+                    url: "/gettags",
+                    async: false,
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    success: function (result) {
+                        var taglist = result.split(',');
+                        //console.log(taglist)
+                        for (var j = 0; j < taglist.length; j++) {
+                            var $tagspan = $('<span class="badge badge-pill tagspan badge-primary"></span>');
+                            $tagspan.text(taglist[j])
+                            $tag.append($tagspan[0])
+                        }
+
+                        reBind()
+                    }
+                })
+
+            }
         }
 
         function refreshtaglist() {
-            var path=window.location.pathname.replace("/","");
+            var path = window.location.pathname.replace("/", "");
             $.ajax({
                 type: "POST",
                 url: "/" + path + "/" + "refreshTaglist",
@@ -285,6 +327,7 @@
                 success: function (result) {
                     $("#fileform").html(result)
                     reBind()
+                    loadTags()
                 }
             })
 
@@ -340,6 +383,7 @@
                 success: function (e) {
                     $("#fileform").html(e)
                     reBind()
+                    loadTags()
                     $("#upfileform")[0].reset()
                     $("#upfilename").text("")
                     $("#upfilesize").text("");
@@ -361,7 +405,7 @@
                 }
             })
             $("#fileform")[0].reset()
-            $("#checkAll").prop('checked', false);       
+            $("#checkAll").prop('checked', false);
             return false
         })
 

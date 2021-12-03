@@ -59,6 +59,17 @@ public class TagFileServiceImpl implements TagFileService {
         return tags;
     }
 
+    public List<String> getTagNameByFileId(Integer fileId) {
+        QueryWrapper<TagFile> wrapper = new QueryWrapper<>();
+        List<String> tagsName = new ArrayList<String>();
+        wrapper.eq("fileid", fileId);
+        List<TagFile> tagList = mapper.selectList(wrapper);
+        for (TagFile tag : tagList) {
+            tagsName.add(tag.getName());
+        }
+        return tagsName;
+    }
+
     public List<String> getAllTagName() {
         List<String> nameList = new ArrayList<String>();
         return nameList;

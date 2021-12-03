@@ -3,9 +3,13 @@ package com.project.javaweb.controller;
 import java.io.IOException;
 import java.util.Date;
 
+import javax.servlet.http.HttpSession;
+
 import com.project.javaweb.pojo.Files;
+import com.project.javaweb.pojo.Users;
 import com.project.javaweb.service.FileSrcService;
 import com.project.javaweb.service.FilesService;
+import com.project.javaweb.service.UsersService;
 import com.project.javaweb.util.FileRW;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,7 +46,9 @@ public class EditorController {
     }
 
     @GetMapping("/editor/{fileid}")
-    public String editorIndex(@PathVariable("fileid") Integer fileId,Model model) throws IOException {
+    public String editorIndex(HttpSession session,@PathVariable("fileid") Integer fileId,Model model) throws IOException {
+        Users user = (Users) session.getAttribute("user");
+        model.addAttribute("user", user);
         model.addAttribute("fileid", fileId);
         return "editor";
     }
