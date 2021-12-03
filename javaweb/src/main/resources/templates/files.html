@@ -20,9 +20,16 @@
     <title>My Files</title>
     <meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
     <style>
-        .tagspan{
-            margin-left: 3px;
+        .tagspan {
+            margin-left: 5px;
         }
+
+        /* .body {
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -o-user-select: none;
+            user-select: none;
+        } */
     </style>
 </head>
 
@@ -138,12 +145,10 @@
                                     <input type="checkbox" th:value="${file.id}" th:name="'file'+${iterStat.index}">
                                 </td>
                                 <td class="func" th:text="${file.name}" th:onclick="openFile([[${file.id}]])"></td>
-                                <td class="func tag" th:classappend="${file.id}">
-
-                                </td>
+                                <td class="func tag" th:classappend="${file.id}" th:onclick="editTags([[${file.id}]])">  </td>
                                 <td th:text="${file.type}=='jf'?'Document':'Markdown'"></td>
-                                <td th:text="${file.ownerid}"></td>
-                                <td th:text="${file.ispublic}"></td>
+                                <td th:text="${file.ownerid}" onclick="tdclick(this)"></td>
+                                <td th:text="${file.ispublic}" onclick="tdclick(this)"></td>
                                 <td th:text="${#dates.format(file.updatetime,'yyyy-MM-dd HH:mm:ss')}"></td>
                                 <td th:text="${#dates.format(file.createtime,'yyyy-MM-dd HH:mm:ss')}"></td>
                             </tr>
@@ -158,7 +163,7 @@
 
 
     <div class="modal fade" id="newbox" tabindex="-1" aria-labelledby="addbox" aria-hidden="true">
-        <div class="modal-dialog">
+        <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="exampleModalLabel">New File</h5>
@@ -204,7 +209,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button type="button" id="btnadd" class="btn btn-primary" onclick="$('#newfileform').submit()"
+                    <button type="button" id="btnadd" class="btn btn-primary" data-dismiss="modal" onclick="$('#newfileform').submit()"
                         disabled>Create</button>
                 </div>
             </div>
@@ -212,7 +217,7 @@
     </div>
 
     <div class="modal fade" id="upbox" tabindex="-1" aria-labelledby="upbox" aria-hidden="true">
-        <div class="modal-dialog">
+        <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="exampleModalLabel">Upload File</h5>
@@ -240,7 +245,61 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button type="button" id="btnup" class="btn btn-primary" onclick="uploadFile()">Upload</button>
+                    <button type="button" id="btnup" class="btn btn-primary" data-dismiss="modal" onclick="uploadFile()">Upload</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="editbox" tabindex="-1" aria-labelledby="editbox" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Edit File</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body" id="editboxbody">
+                    <form method="post" id="editfileform">
+                        <input type="hidden" name="page" th:value="${page}">
+                        <div class="input-group mb-3">
+                            <input type="text" id="tags0" onkeyup="checkVoid()" name="name" class="form-control"
+                                placeholder="Enter File Name" aria-label="Enter File Name"
+                                aria-describedby="addnameback" required>
+                            <div class="input-group-append">
+                                <span class="input-group-text" id="addnameback">.docx</span>
+                                <input id="addtype" type="hidden" name="type" value="docx">
+                            </div>
+                        </div>
+                        <div class="form-check" style="margin-top: -2%;margin-bottom: 2%;margin-left: 1%;">
+                            <input id="pub" name="ispublic" class="form-check-input" type="checkbox" value="1">
+                            <label class="form-check-label" for="defaultCheck1">
+                                Public
+                            </label>
+                        </div>
+                        <div class="input-group mb-3" id="tag-group">
+                            <div class="input-group-append">
+                                <span class="input-group-text">Tag</span>
+                            </div>
+                            <input id="tags1" name="tag1" type="text" class="form-control" placeholder="Enter the tag"
+                                aria-label="Recipient's username" aria-describedby="button-addon2"
+                                onkeyup="$.checktag(1)">
+                            <div class="input-group-append">
+                                <button class="btn btn-outline-secondary btnadd" type="button" id="tagadd1"
+                                    onclick="$.addtags()" disabled>Add</button>
+                            </div>
+                            <div class="input-group-append">
+                                <button class="btn btn-outline-secondary  btndel" type="button" id="tagdel1"
+                                    onclick="$.deltags()" disabled>Del</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" id="btnadd" data-dismiss="modal" class="btn btn-primary" onclick=""
+                        disabled>Edit</button>
                 </div>
             </div>
         </div>
@@ -249,26 +308,37 @@
     <script>
         function reBind() {
             $tbody = $("#tbody")
-            $("#checkAll").click(function (event) {
+            $("#checkAll").on("click",function (event) {
                 $tbody.find('input').prop('checked', $(this).prop('checked'));
+                $("#filedelete_btn").prop("disabled", $tbody.find('input[type="checkbox"]:checked').length == 0)
                 event.stopPropagation();
-                $("#filedelete_btn").prop("disabled", $tbody.find('input:checked').length == 0)
             });
 
-            $tbody.click(function (event) {
-                $("#checkAll").prop('checked', $(this).find('input:checked').length == $(this).children('tr').length);
-                event.stopPropagation();
-                $("#filedelete_btn").prop("disabled", $(this).find('input:checked').length == 0)
+            $tbody.on("click",function (e) {
+                $("#checkAll").prop('checked', $(this).find('input[type="checkbox"]:checked').length == $(this).children('tr').length);
+                $("#filedelete_btn").prop("disabled", $(this).find('input[type="checkbox"]:checked').length == 0)
+                e.stopPropagation();
             });
-            $td = $tbody.find("tr td").not(".func");
-            $td.click(function (event) {
-                $(this).parent().find("input").click();
-            });
+            // $td = $tbody//.find("tr")// td").not(".func");
+            // $("#tbody tr td").click(function(e){
+            //     console.log($td.length)
+            //     $(this).parent().find("input:checked").click();
+            //     e.stopPropagation();
+            // });
+            $tbody.find("tr td").not(".func").each(function(e){
+                $(this).attr("onclick","tdclick(this)");
+            })
 
 
         }
         reBind()
         loadTags()
+
+        function tdclick(e){
+            var $temp=$(e);
+            $temp.parent().find("input[type='checkbox']").click()
+            //console.log($temp)
+        }
 
         function openFile(fileid) {
             window.location.href = "/editor/" + fileid;
@@ -276,13 +346,13 @@
 
         function loadTags() {
             //console.log($tagspan.html())
-            var $len = $("#tbody").find(".tag").length;
-            for (var i = 0; i < $len; i++) {
-                var $files = $("#tbody").find(".tag");
+            $files = $("#tbody").find(".tag");
+            $files.each(function(e){                
                 var formData = new FormData();
-                var $tag = $files[i];
-                //console.log($tag)
-                formData.append("fileid", $tag.classList[2])
+                $tag = $(this);
+                $tag.html("")
+                //console.log($tag[0].classList[2]);
+                formData.append("fileid", $tag[0].classList[2])
                 $.ajax({
                     type: "POST",
                     url: "/gettags",
@@ -294,16 +364,17 @@
                         var taglist = result.split(',');
                         //console.log(taglist)
                         for (var j = 0; j < taglist.length; j++) {
-                            var $tagspan = $('<span class="badge badge-pill tagspan badge-primary"></span>');
-                            $tagspan.text(taglist[j])
-                            $tag.append($tagspan[0])
+                            $tagspan = $('<a class="badge tagspan badge-primary"></a>');
+                            $tagspan.text(taglist[j]);
+                            //console.log($tagspan)
+                            $tag.append($tagspan.prop("outerHTML"));
                         }
 
                         reBind()
                     }
                 })
 
-            }
+            })
         }
 
         function refreshtaglist() {
@@ -315,6 +386,7 @@
                 success: function (result) {
                     $("#taglist").html(result)
                     reBind()
+                    loadTags()
                 }
             })
         }
@@ -326,10 +398,18 @@
                 data: '',
                 success: function (result) {
                     $("#fileform").html(result)
-                    reBind()
                     loadTags()
+                    reBind()
+                    $("#filedelete_btn").prop("disabled",true)
+                    
                 }
             })
+
+        }
+
+        function editTags(fileid){
+            $('#editbox').trigger('focus')
+            console.log($("#tbody").find("."+fileid))
 
         }
 
@@ -405,6 +485,7 @@
                 }
             })
             $("#fileform")[0].reset()
+            $("#filedelete_btn").prop("disabled",true)
             $("#checkAll").prop('checked', false);
             return false
         })
@@ -420,6 +501,7 @@
                     $("#fileform").html(result)
                     reBind()
                     refreshtaglist();
+                    loadTags();
                 }
             })
             $("#newfileform")[0].reset()
