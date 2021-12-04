@@ -40,13 +40,13 @@ public class FilesController {
     private FileSrcService fileSrcService;
 
     @RequestMapping("/{op}")
-    public String getMyFiles(@PathVariable("op") String page,HttpSession session, Model model) {
+    public String getMyFiles(@PathVariable("op") String page, HttpSession session, Model model) {
         Users user = (Users) session.getAttribute("user");
         List<Files> filesList;
 
-        if(!page.equals("home")){
+        if (!page.equals("home")) {
             filesList = filesService.selectByPublic("Public");
-        }else{
+        } else {
             filesList = filesService.selectByOwner(user.getId());
         }
 
@@ -60,14 +60,64 @@ public class FilesController {
 
     @PostMapping("/gettags")
     @ResponseBody
-    public String getTagsByFileId(@RequestParam("fileid") Integer fileId){
+    public String getTagsByFileId(@RequestParam("fileid") Integer fileId) {
         List<String> tagList = tagFileService.getTagNameByFileId(fileId);
 
         return String.join(",", tagList);
     }
 
+    @PostMapping("/editfile")
+    public String editFile(@RequestParam Map<String, String> content, HttpSession session, Model model) {
+        Users user = (Users) session.getAttribute("user");
+        TagFile tag;
+        Integer fileId = Integer.parseInt(content.get("id"));
+        Files file = filesService.selectById(fileId);
+        List<TagFile> tagList = tagFileService.selectByFileId(fileId);
+        Integer num = 0;
+
+        file.setName(content.get("name"));
+        file.setUpdatetime(new Date());
+
+        if (content.get("ispublic") != null) {
+            file.setIspublic("Public");
+        } else {
+            file.setIspublic("Private");
+        }
+
+        filesService.update(file);
+
+        for (Map.Entry<String, String> entry : content.entrySet()) {
+            if (entry.getKey().contains("tag")) {
+                if (num < tagList.size()) {
+                    tag = tagList.get(num++);
+                    tag.setName(entry.getValue());
+                    tagFileService.update(tag);
+                } else {
+                    tag = new TagFile();
+                    tag.setFileid(fileId);
+                    tag.setName(entry.getValue());
+                    tagFileService.insert(tag);
+                }
+            }
+        }
+
+        while(num<tagList.size()){
+            tagFileService.deleteById(tagList.get(num).getId());
+            num++;
+        }
+
+        if (content.get("page").equals("home")) {
+            model.addAttribute("filelist", filesService.selectByOwner(user.getId()));
+        } else {
+            model.addAttribute("filelist", filesService.selectByPublic("Public"));
+        }
+
+        return "files::file_table";
+    }
+
     @PostMapping("/addfile")
-    public String addNewFile(HttpSession session, @RequestParam Map<String, String> content, Model model) throws UnsupportedEncodingException {
+    public String addNewFile(HttpSession session, @RequestParam Map<String, String> content, Model model)
+            throws UnsupportedEncodingException {
         Files file = new Files();
         TagFile tag = new TagFile();
         FileSrc src = new FileSrc();

@@ -32,6 +32,12 @@ public class TagFileServiceImpl implements TagFileService {
         return mapper.selectList(wrapper);
     }
 
+    public void update(TagFile obj){
+        QueryWrapper<TagFile> wrapper = new QueryWrapper<>();
+        wrapper.eq("id", obj.getId());
+        mapper.update(obj, wrapper);
+    }
+
     public List<Integer> getFileIdListByName(String name) {
         QueryWrapper<TagFile> wrapper = new QueryWrapper<>();
         wrapper.eq("name", name);

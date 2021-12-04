@@ -16,4 +16,5 @@ public interface TagFileService {
     HashSet<String> getTagNameByFileList(List<Files> filesList);
     List<Integer> getFileIdListByName(String name);
     List<String> getTagNameByFileId(Integer fileId);
+    void update(TagFile obj);
 }
