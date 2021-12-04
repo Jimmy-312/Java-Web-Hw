@@ -2,15 +2,17 @@
 A homework of my lesson
 
 ## To do
-- file info edit
-- tag display
-- tag edit
+- ~~file info edit~~
+- ~~tag display~~
+- ~~tag edit~~
 - file search
-- online edit engine (key)
-    - user access of file
+- file encrypt
+- improve file upload
+- online editor (key)
+    - user auth access of file
     - multiply user edit
     - format transfer
-    - support markdown
+    - ~~support markdown~~
 - file sort
 - file share
 - user register
