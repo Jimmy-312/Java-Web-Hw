@@ -9,7 +9,7 @@ import org.springframework.web.multipart.MultipartFile;
 public interface FilesService {
     void insert(Files file);
     Files selectById(int id);
-    void deleteById(int id);
+    void deleteByIds(List<Integer> ids);
     List<Files> selectAll();
     Files selectByName(String name);
     List<Files> selectByOwner(int ownerid);

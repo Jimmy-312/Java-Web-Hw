@@ -89,8 +89,21 @@
             type: "POST",
             url: '/editor/' + fileid,
             success: function (e) {
-                //console.log(e)
-                vditor.setValue(e);
+                //console.log()
+                var level = e["level"];
+                if(level=="Super"){
+                    
+                }else
+                if(level=="Editor"){
+
+                }
+                if(level=="viewer"){
+                    vditor.disabled()
+                }else{
+                    window.history.go(-1);
+                    return
+                }
+                vditor.setValue(e["content"]);
             }
         });
     }

@@ -10,6 +10,8 @@ A homework of my lesson
 - improve file upload
 - online editor (key)
     - user auth access of file
+        - ~~basic control~~
+        - auth settings
     - multiply user edit
     - format transfer
     - ~~support markdown~~

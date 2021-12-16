@@ -61,8 +61,8 @@ public class FilesServiceImpl implements FilesService {
         return mapper.selectList(wrapper);
     }
 
-    public void deleteById(int id) {
-        mapper.deleteById(id);
+    public void deleteByIds(List<Integer> ids) {
+        mapper.deleteBatchIds(ids);
     }
 
     public List<Files> selectAll() {

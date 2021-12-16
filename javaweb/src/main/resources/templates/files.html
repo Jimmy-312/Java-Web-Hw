@@ -131,8 +131,8 @@
                                 <th>Name</th>
                                 <th>Tags</th>
                                 <th>Type</th>
-                                <th>Owner</th>
-                                <th>public</th>
+                                <th>Authority</th>
+                                <th>Public</th>
                                 <th>Updatetime</th>
                                 <th>CreateTime</th>
 
@@ -150,7 +150,7 @@
                                 </td>
                                 <td name="type" th:class="${file.type}"
                                     th:text="${file.type}=='jf'?'Document':'Markdown'"></td>
-                                <td th:text="${file.ownerid}" onclick="tdclick(this)"></td>
+                                <td class="auth" th:classappend="${file.id}" onclick="tdclick(this)"></td>
                                 <td th:text="${file.ispublic}" name="public" onclick="tdclick(this)"></td>
                                 <td th:text="${#dates.format(file.updatetime,'yyyy-MM-dd HH:mm:ss')}"></td>
                                 <td th:text="${#dates.format(file.createtime,'yyyy-MM-dd HH:mm:ss')}"></td>

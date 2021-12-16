@@ -11,10 +11,12 @@ import javax.servlet.http.HttpSession;
 
 import org.springframework.ui.Model;
 
+import com.project.javaweb.pojo.AuthFile;
 import com.project.javaweb.pojo.FileSrc;
 import com.project.javaweb.pojo.Files;
 import com.project.javaweb.pojo.TagFile;
 import com.project.javaweb.pojo.Users;
+import com.project.javaweb.service.AuthFileService;
 import com.project.javaweb.service.FileSrcService;
 import com.project.javaweb.service.FilesService;
 import com.project.javaweb.service.TagFileService;
@@ -38,6 +40,8 @@ public class FilesController {
     private TagFileService tagFileService;
     @Autowired
     private FileSrcService fileSrcService;
+    @Autowired
+    private AuthFileService authFileService;
 
     @RequestMapping("/{op}")
     public String getMyFiles(@PathVariable("op") String page, HttpSession session, Model model) {
@@ -121,6 +125,7 @@ public class FilesController {
         Files file = new Files();
         TagFile tag = new TagFile();
         FileSrc src = new FileSrc();
+        AuthFile authFile = new AuthFile();
         Users user = (Users) session.getAttribute("user");
 
         src.setSrc(content.get("name") + "." + content.get("type"));
@@ -140,6 +145,11 @@ public class FilesController {
 
         src.setFileid(file.getId());
         fileSrcService.insert(src);
+
+        authFile.setFileid(file.getId());
+        authFile.setUserid(user.getId());
+        authFile.setLevel("Super");
+        authFileService.insert(authFile);
 
         FileRW.writeFile(src.getSrc(), "");
 
@@ -164,12 +174,10 @@ public class FilesController {
 
     @PostMapping("/delfile")
     public String delFile(HttpSession session, Model model, @RequestParam Map<String, Integer> content) {
-        Collection<Integer> idList = content.values();
+        List<Integer> idList = new ArrayList<Integer>(content.values());
         Users user = (Users) session.getAttribute("user");
 
-        for (Object id : idList.toArray()) {
-            filesService.deleteById(Integer.parseInt(id.toString()));
-        }
+        filesService.deleteByIds(idList);
 
         model.addAttribute("filelist", filesService.selectByOwner(user.getId()));
         return "files::file_table";
@@ -257,4 +265,12 @@ public class FilesController {
         model.addAttribute("page", page);
         return "files::tags_list";
     }
+
+    @PostMapping("/getauth")
+    @ResponseBody
+    public String loadAuth(@RequestParam("fileid") Integer fileId, HttpSession session){
+        Users user = (Users) session.getAttribute("user");
+        return authFileService.selectByFileId(fileId,user.getId()).getLevel();
+    }
+
 }

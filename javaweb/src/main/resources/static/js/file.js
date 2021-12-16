@@ -25,6 +25,7 @@ function reBind() {
 }
 reBind()
 loadTags()
+loadAuth()
 
 function tdclick(e) {
     var $temp = $(e);
@@ -69,6 +70,28 @@ function loadTags() {
     })
 }
 
+function loadAuth() {
+    $auths = $("#tbody").find(".auth");
+    $auths.each(function(e){
+        var formData = new FormData();
+        $auth = $(this);
+        formData.append("fileid", $auth[0].classList[1])
+        $.ajax({
+            type: "POST",
+            url: "/getauth",
+            async: false,
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function (result) {
+                $auth.text(result)
+                reBind()
+            }
+        })
+
+    })
+}
+
 function refreshtaglist() {
     var path = window.location.pathname.replace("/", "");
     $.ajax({
@@ -79,6 +102,7 @@ function refreshtaglist() {
             $("#taglist").html(result)
             reBind()
             loadTags()
+            loadAuth()
         }
     })
 }
@@ -91,6 +115,7 @@ function switch_tag(tagname, op) {
         success: function (result) {
             $("#fileform").html(result)
             loadTags()
+            loadAuth()
             reBind()
             $("#filedelete_btn").prop("disabled", true)
 
@@ -150,6 +175,7 @@ function editSubmit(){
             reBind()
             refreshtaglist();
             loadTags();
+            loadAuth()
         }
     })
 }
@@ -205,6 +231,7 @@ function uploadFile() {
             $("#fileform").html(e)
             reBind()
             loadTags()
+            loadAuth()
             $("#upfileform")[0].reset()
             $("#upfilename").text("")
             $("#upfilesize").text("");
@@ -241,6 +268,7 @@ $("#newfileform").submit(function (e) {
             reBind()
             refreshtaglist();
             loadTags();
+            loadAuth()
 
             $("#newfileform")[0].reset()
             resetAdd()
