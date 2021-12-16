@@ -16,4 +16,5 @@ public interface FilesService {
     List<Files> selectByPublic(String string);
     boolean uploadFile(String fileName, MultipartFile fileContent);
     void update(Files files);
+    List<Files> selectByIds(List<Integer> idList);
 }

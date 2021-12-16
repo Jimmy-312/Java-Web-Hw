@@ -150,7 +150,7 @@
                                 </td>
                                 <td name="type" th:class="${file.type}"
                                     th:text="${file.type}=='jf'?'Document':'Markdown'"></td>
-                                <td class="auth" th:classappend="${file.id}" onclick="tdclick(this)"></td>
+                                <td class="auth func" th:classappend="${file.id}"></td>
                                 <td th:text="${file.ispublic}" name="public" onclick="tdclick(this)"></td>
                                 <td th:text="${#dates.format(file.updatetime,'yyyy-MM-dd HH:mm:ss')}"></td>
                                 <td th:text="${#dates.format(file.createtime,'yyyy-MM-dd HH:mm:ss')}"></td>
@@ -251,6 +251,47 @@
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                     <button type="button" id="btnup" class="btn btn-primary" data-dismiss="modal"
                         onclick="uploadFile()">Upload</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="authbox" tabindex="-1" aria-labelledby="authbox" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Authority Control</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body" id="authboxbody">
+                    <div id="userlist" style="margin: 0 auto">
+
+                    </div>
+
+                    <div id="addauth" style="margin-top: 30px;">
+                        <form id="authform">
+                            <input type="hidden" id="authfileid" name="fileid">
+                            <div class="input-group mb-3">
+                                <input type="text" id="inputuser" class="form-control" placeholder="Enter File Name"
+                                    aria-label="Enter User Name" name="username" required>
+                            </div>
+
+
+                            <div class="form-check form-check-inline">
+                                <label><input type="radio" name="type">Viewer</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <label><input type="radio" name="type">Editor</label>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" id="btnauth" class="btn btn-primary" data-dismiss="modal"
+                        onclick="">Okay</button>
                 </div>
             </div>
         </div>

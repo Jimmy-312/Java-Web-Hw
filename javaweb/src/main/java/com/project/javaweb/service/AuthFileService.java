@@ -10,5 +10,7 @@ public interface AuthFileService {
     void deleteById(int id);
     List<AuthFile> selectAll();
     AuthFile selectByFileId(int fileid,int userid);
+    List<Integer> selectFileIdByUserId(int userid);
+    List<AuthFile> selectByFileId(int fileid);
 }
  

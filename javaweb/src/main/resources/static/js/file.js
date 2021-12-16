@@ -72,10 +72,10 @@ function loadTags() {
 
 function loadAuth() {
     $auths = $("#tbody").find(".auth");
-    $auths.each(function(e){
+    $auths.each(function (e) {
         var formData = new FormData();
         $auth = $(this);
-        formData.append("fileid", $auth[0].classList[1])
+        formData.append("fileid", $auth[0].classList[2])
         $.ajax({
             type: "POST",
             url: "/getauth",
@@ -85,10 +85,70 @@ function loadAuth() {
             contentType: false,
             success: function (result) {
                 $auth.text(result)
+                if (result == "Super") {
+                    $auth.append("<button onclick=\"$(\'#authbox\').modal();getAuthUser(" + $auth[0].classList[2] + ");return false\">123</button>")
+                }
                 reBind()
             }
         })
 
+    })
+}
+
+$("#inputuser").keypress(function (e) {
+    if (e.which == 13) {
+        changeAuth();
+        return false;
+    }
+});
+
+function changeAuth(fileid) {
+    //$("#authform")[0].reset();
+    var $authform= $("#authform");
+    console.log($authform.serialize)
+    $.ajax({
+        type: "POST",
+        url: "/changeauth",
+        //async: false,
+        data: $authform.serialize(),
+        success: function (result) {
+
+        }
+    })
+}
+
+function getAuthUser(fileid) {
+    var $ulist = $("#userlist");
+    $("#inputuser").val("")
+    $("#authfileid").val(fileid)
+    var formData = new FormData();
+
+    $ulist.html("")
+    //console.log($tag[0].classList[2]);
+    formData.append("fileid", fileid);
+    $.ajax({
+        type: "POST",
+        url: "/getauthuser",
+        //async: false,
+        data: formData,
+        processData: false,
+        contentType: false,
+        success: function (result) {
+            $.each(result,function(i,n){
+                $span = $('<a class="badge"></a>');
+                if(n=="Super"){
+                    return
+                }else
+                if(n=="Viewer"){
+                    $span.addClass("badge-warning")
+                }else
+                if(n=="Editor"){
+                    $span.addClass("badge-success")
+                }
+                $span.text(i);
+                $ulist.append($span.prop("outerHTML"))
+            })
+        }
     })
 }
 
@@ -124,48 +184,48 @@ function switch_tag(tagname, op) {
 
 }
 
-function initAdd(type){
+function initAdd(type) {
     $("#newfileform")[0].reset();
     resetAdd();
-    $("#btnadd").prop("disabled",true)
+    $("#btnadd").prop("disabled", true)
     $("#boxLabel").text("New File")
     $("#btnadd").text("New")
-    $("#btnadd").attr("onclick","$('#newfileform').submit()")
-    
+    $("#btnadd").attr("onclick", "$('#newfileform').submit()")
+
     $("#tags0").val("")
     //console.log(type)
     $("#addtype").val(type)
-    $("#addnameback").text('.'+$("#addtype").val())
+    $("#addnameback").text('.' + $("#addtype").val())
 
-    $("#pub").prop("checked",false)
+    $("#pub").prop("checked", false)
 }
 
 function editTags(e) {
     $("#newfileform")[0].reset()
     resetAdd()
-    $("#btnadd").attr("onclick","editSubmit()")
+    $("#btnadd").attr("onclick", "editSubmit()")
     $("#boxLabel").text("File Edit")
     $("#btnadd").text("Edit")
     $('#newbox').modal()
     var $temp = e;
     $("#tags0").val($temp.find("td[name='name']").text())
     $("#addtype").val($temp.find("td[name='type']").attr("class"))
-    $("#addnameback").text('.'+$("#addtype").val())
+    $("#addnameback").text('.' + $("#addtype").val())
     $("#addid").val($temp.find("input[type='checkbox']").val())
     //console.log($temp.find("td[name='public']").text())
-    $("#pub").prop("checked",$temp.find("td[name='public']").text()=="Public")
-    var i=1;
-    $temp.children(".tag").children().each(function(e){
-        $("#tags"+i).val($(this).text())
-        $("#tagadd"+i).click()
+    $("#pub").prop("checked", $temp.find("td[name='public']").text() == "Public")
+    var i = 1;
+    $temp.children(".tag").children().each(function (e) {
+        $("#tags" + i).val($(this).text())
+        $("#tagadd" + i).click()
         i++
-        
+
     })
-    $("#tagdel"+i).click()
+    $("#tagdel" + i).click()
 
 }
 
-function editSubmit(){
+function editSubmit() {
     $.ajax({
         type: "POST",
         url: "/editfile",

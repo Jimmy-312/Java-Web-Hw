@@ -2,9 +2,11 @@ package com.project.javaweb.service.impl;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Collection;
 import java.util.List;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+
 import com.project.javaweb.mapper.FilesMapper;
 import com.project.javaweb.pojo.Files;
 import com.project.javaweb.service.FilesService;
@@ -67,5 +69,9 @@ public class FilesServiceImpl implements FilesService {
 
     public List<Files> selectAll() {
         return mapper.selectList(null);
+    }
+
+    public List<Files> selectByIds(List<Integer> idList){
+        return mapper.selectBatchIds(idList);
     }
 }

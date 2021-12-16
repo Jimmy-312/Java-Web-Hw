@@ -2,8 +2,10 @@ package com.project.javaweb.controller;
 
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
-import java.util.Collection;
+
 import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
@@ -20,6 +22,7 @@ import com.project.javaweb.service.AuthFileService;
 import com.project.javaweb.service.FileSrcService;
 import com.project.javaweb.service.FilesService;
 import com.project.javaweb.service.TagFileService;
+import com.project.javaweb.service.UsersService;
 import com.project.javaweb.util.FileRW;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,6 +45,8 @@ public class FilesController {
     private FileSrcService fileSrcService;
     @Autowired
     private AuthFileService authFileService;
+    @Autowired
+    private UsersService usersService;
 
     @RequestMapping("/{op}")
     public String getMyFiles(@PathVariable("op") String page, HttpSession session, Model model) {
@@ -51,7 +56,7 @@ public class FilesController {
         if (!page.equals("home")) {
             filesList = filesService.selectByPublic("Public");
         } else {
-            filesList = filesService.selectByOwner(user.getId());
+            filesList = filesService.selectByIds(authFileService.selectFileIdByUserId(user.getId()));
         }
 
         model.addAttribute("tags", tagFileService.getTagNameByFileList(filesList));
@@ -111,7 +116,7 @@ public class FilesController {
         }
 
         if (content.get("page").equals("home")) {
-            model.addAttribute("filelist", filesService.selectByOwner(user.getId()));
+            model.addAttribute("filelist", filesService.selectByIds(authFileService.selectFileIdByUserId(user.getId())));
         } else {
             model.addAttribute("filelist", filesService.selectByPublic("Public"));
         }
@@ -164,7 +169,7 @@ public class FilesController {
         }
 
         if (content.get("page").equals("home")) {
-            model.addAttribute("filelist", filesService.selectByOwner(user.getId()));
+            model.addAttribute("filelist", filesService.selectByIds(authFileService.selectFileIdByUserId(user.getId())));
         } else {
             model.addAttribute("filelist", filesService.selectByPublic("Public"));
         }
@@ -179,7 +184,7 @@ public class FilesController {
 
         filesService.deleteByIds(idList);
 
-        model.addAttribute("filelist", filesService.selectByOwner(user.getId()));
+        model.addAttribute("filelist", filesService.selectByIds(authFileService.selectFileIdByUserId(user.getId())));
         return "files::file_table";
     }
 
@@ -213,7 +218,7 @@ public class FilesController {
 
         }
 
-        model.addAttribute("filelist", filesService.selectByOwner(user.getId()));
+        model.addAttribute("filelist", filesService.selectByIds(authFileService.selectFileIdByUserId(user.getId())));
         return "files::file_table";
     }
 
@@ -225,7 +230,7 @@ public class FilesController {
             if (!page.equals("home")) {
                 model.addAttribute("filelist", filesService.selectByPublic("Public"));
             } else {
-                model.addAttribute("filelist", filesService.selectByOwner(user.getId()));
+                model.addAttribute("filelist", filesService.selectByIds(authFileService.selectFileIdByUserId(user.getId())));
             }
 
             return "files::file_table";
@@ -238,7 +243,7 @@ public class FilesController {
         if (!page.equals("home")) {
             fileList = filesService.selectByPublic("Public");
         } else {
-            fileList = filesService.selectByOwner(user.getId());
+            fileList = filesService.selectByIds(authFileService.selectFileIdByUserId(user.getId()));
         }
 
         for (Files file : fileList) {
@@ -258,7 +263,7 @@ public class FilesController {
         if (!page.equals("home")) {
             filesList = filesService.selectByPublic("Public");
         } else {
-            filesList = filesService.selectByOwner(user.getId());
+            filesList = filesService.selectByIds(authFileService.selectFileIdByUserId(user.getId()));
         }
 
         model.addAttribute("tags", tagFileService.getTagNameByFileList(filesList));
@@ -270,7 +275,40 @@ public class FilesController {
     @ResponseBody
     public String loadAuth(@RequestParam("fileid") Integer fileId, HttpSession session){
         Users user = (Users) session.getAttribute("user");
-        return authFileService.selectByFileId(fileId,user.getId()).getLevel();
+        AuthFile relation = authFileService.selectByFileId(fileId,user.getId());
+        if(relation==null){
+            return "None";
+        }
+        return relation.getLevel();
+    }
+
+    @PostMapping("/getauthuser")
+    @ResponseBody
+    public Map<String,Object> getFileAuthUsers(@RequestParam("fileid") Integer fileid){
+        Map<String,Object> info = new HashMap<>();
+        List<AuthFile> authList = authFileService.selectByFileId(fileid);
+
+        for(AuthFile auth : authList){
+            Users user = usersService.selectById(auth.getUserid());
+            info.put(user.getName(), auth.getLevel());
+        }
+
+        return info;
+    }
+
+
+    @PostMapping("/changeauth")
+    @ResponseBody
+    public String changeAuth(@RequestParam("fileid") Integer fileid){
+        Map<String,Object> info = new HashMap<>();
+        List<AuthFile> authList = authFileService.selectByFileId(fileid);
+
+        for(AuthFile auth : authList){
+            Users user = usersService.selectById(auth.getUserid());
+            info.put(user.getName(), auth.getLevel());
+        }
+        
+        return "Okay";
     }
 
 }

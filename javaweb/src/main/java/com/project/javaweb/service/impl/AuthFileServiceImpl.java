@@ -1,5 +1,6 @@
 package com.project.javaweb.service.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -36,5 +37,24 @@ public class AuthFileServiceImpl implements AuthFileService{
         wrapper.eq("fileid", fileid);
         wrapper.eq("userid", userid);
         return mapper.selectOne(wrapper);
+    }
+
+    public List<Integer> selectFileIdByUserId(int userid) {
+        QueryWrapper<AuthFile> wrapper = new QueryWrapper<>();
+        wrapper.eq("userid", userid);
+        List<AuthFile> authList = mapper.selectList(wrapper);
+        List<Integer> fileIdList = new ArrayList<Integer>();
+        for (AuthFile auth : authList){
+            fileIdList.add(auth.getFileid());
+        }
+        return fileIdList;
+    }
+
+    public List<AuthFile> selectByFileId(int fileid) {
+        QueryWrapper<AuthFile> wrapper = new QueryWrapper<>();
+        wrapper.eq("fileid", fileid);
+        List<AuthFile> authList = mapper.selectList(wrapper);
+
+        return authList;
     }
 }

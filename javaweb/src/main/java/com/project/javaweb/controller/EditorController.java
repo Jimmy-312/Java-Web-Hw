@@ -59,7 +59,7 @@ public class EditorController {
         content=FileRW.readFile(fileName);
         info.put("level", level);
         info.put("content", content);
-
+        //System.out.println(info);
         return info;
     }
 
