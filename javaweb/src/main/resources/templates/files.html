@@ -150,7 +150,7 @@
                                 </td>
                                 <td name="type" th:class="${file.type}"
                                     th:text="${file.type}=='jf'?'Document':'Markdown'"></td>
-                                <td class="auth func" th:classappend="${file.id}"></td>
+                                <td class="auth func" th:classappend="${file.id}" onclick="tdclick(this)"></td>
                                 <td th:text="${file.ispublic}" name="public" onclick="tdclick(this)"></td>
                                 <td th:text="${#dates.format(file.updatetime,'yyyy-MM-dd HH:mm:ss')}"></td>
                                 <td th:text="${#dates.format(file.createtime,'yyyy-MM-dd HH:mm:ss')}"></td>

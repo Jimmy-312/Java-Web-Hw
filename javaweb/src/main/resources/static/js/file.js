@@ -84,14 +84,47 @@ function loadAuth() {
             processData: false,
             contentType: false,
             success: function (result) {
-                $auth.text(result)
+                var $authtag = $("<span></span>")
+                $authtag.text(result)
+                $auth.html($authtag)
                 if (result == "Super") {
-                    $auth.append("<button onclick=\"$(\'#authbox\').modal();getAuthUser(" + $auth[0].classList[2] + ");return false\">123</button>")
-                }
+                    $auth.append("<i class=\"bi bi-wrench\" onclick=\"tdclick($(this).parent());$(\'#authbox\').modal();getAuthUser(" + $auth[0].classList[2] + ");\" style=\"margin-left:15px\"></i>")
+                    $authtag.addClass("badge badge-danger")
+                } else
+                    if (result == "Viewer") {
+                        $auth.append("<i class=\"bi bi-x-circle\" onclick=\"tdclick($(this).parent());removemyauth(" + $auth[0].classList[2] + ",this);\" style=\"margin-left:10px\"></i>")
+                        $authtag.addClass("badge badge-warning")
+                    } else
+                        if (result == "Editor") {
+                            $auth.append("<i class=\"bi bi-x-circle\" onclick=\"tdclick($(this).parent());removemyauth(" + $auth[0].classList[2] + ");\" style=\"margin-left:15px\"></i>")
+                            $authtag.addClass("badge badge-success")
+                        }else{
+
+                            $authtag.addClass("badge badge-secondary")
+                        }
+
                 reBind()
             }
         })
 
+    })
+}
+
+function removemyauth(fileid,th) {
+    //console.log(fileid)
+    var formData = new FormData();
+    formData.append("fileid", fileid);
+    //formData.append("name", username);
+    $.ajax({
+        type: "POST",
+        url: "/delauth",
+        data: formData,
+        processData: false,
+        contentType: false,
+        success: function (result) {
+            //getAuthUser(fileid);
+            $(th).parent().parent().remove()
+        }
     })
 }
 
@@ -118,6 +151,7 @@ function changeAuth() {
                 } else {
                     //console.log(n)
                     getAuthUser(n);
+                    //$("#inputuser").prop("disabled",true)
                 }
             })
         }

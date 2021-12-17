@@ -327,8 +327,11 @@ public class FilesController {
 
     @PostMapping("/delauth")
     @ResponseBody
-    public Map<String,Object> delAuth(@RequestParam("fileid") Integer fileid,@RequestParam("name") String userName){
+    public Map<String,Object> delAuth(@RequestParam("fileid") Integer fileid,@RequestParam(value="name",required=false) String userName,HttpSession session){
         Map<String,Object> info = new HashMap<>();
+        if (userName == null){
+            userName = ((Users) session.getAttribute("user")).getName();
+        }
         Users user = usersService.selectByName(userName);
   
         authFileService.deleteByRelate(user.getId(), fileid);
