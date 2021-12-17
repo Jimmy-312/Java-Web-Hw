@@ -132,7 +132,6 @@ public class FilesController {
         AuthFile authFile = new AuthFile();
         Users user = (Users) session.getAttribute("user");
 
-        src.setSrc(content.get("name") + "." + content.get("type"));
 
         if (content.get("ispublic") != null) {
             file.setIspublic("Public");
@@ -148,6 +147,7 @@ public class FilesController {
         filesService.insert(file);
 
         src.setFileid(file.getId());
+        src.setSrc(""+file.getId() + "." + content.get("type"));
         fileSrcService.insert(src);
 
         authFile.setFileid(file.getId());
