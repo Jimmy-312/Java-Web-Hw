@@ -57,4 +57,17 @@ public class AuthFileServiceImpl implements AuthFileService{
 
         return authList;
     }
+
+    public void update(AuthFile authFile){
+        QueryWrapper<AuthFile> wrapper = new QueryWrapper<>();
+        wrapper.eq("id", authFile.getId());
+        mapper.update(authFile, wrapper);
+    }
+
+    public void deleteByRelate(Integer userid, Integer fileid){
+        QueryWrapper<AuthFile> wrapper = new QueryWrapper<>();
+        wrapper.eq("fileid", fileid);
+        wrapper.eq("userid", userid);
+        mapper.delete(wrapper);
+    }
 }

@@ -5,7 +5,6 @@ import java.util.ArrayList;
 
 import java.util.Date;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
@@ -299,16 +298,42 @@ public class FilesController {
 
     @PostMapping("/changeauth")
     @ResponseBody
-    public String changeAuth(@RequestParam("fileid") Integer fileid){
+    public Map<String,Object> changeAuth(@RequestParam("fileid") Integer fileid,@RequestParam("username") String userName,@RequestParam("type") String authType,HttpSession session){
         Map<String,Object> info = new HashMap<>();
-        List<AuthFile> authList = authFileService.selectByFileId(fileid);
-
-        for(AuthFile auth : authList){
-            Users user = usersService.selectById(auth.getUserid());
-            info.put(user.getName(), auth.getLevel());
+        Users user = usersService.selectByName(userName);
+        Users myUser = (Users) session.getAttribute("user");
+        if(user == null || user.getId().equals(myUser.getId())){
+            info.put("error", "No such user or cant change auth for self");
+            return info;
         }
+
+        AuthFile authFile = authFileService.selectByFileId(fileid, user.getId());
+        if(authFile == null){
+            authFile = new AuthFile();
+            authFile.setFileid(fileid);
+            authFile.setUserid(user.getId());
+            authFile.setLevel(authType);
+            authFileService.insert(authFile);
+            info.put("ok", fileid);
+        }else{
+            authFile.setLevel(authType);
+            authFileService.update(authFile);
+            info.put("ok", fileid);
+        }
+        //System.out.println(userName+authType+fileid);
         
-        return "Okay";
+        return info;
+    }
+
+    @PostMapping("/delauth")
+    @ResponseBody
+    public Map<String,Object> delAuth(@RequestParam("fileid") Integer fileid,@RequestParam("name") String userName){
+        Map<String,Object> info = new HashMap<>();
+        Users user = usersService.selectByName(userName);
+  
+        authFileService.deleteByRelate(user.getId(), fileid);
+
+        return info;
     }
 
 }

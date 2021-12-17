@@ -38,4 +38,10 @@ public class UsersServiceImpl implements UsersService {
         return mapper.selectList(null);
     }
 
+    public Users selectByName(String name) {
+        QueryWrapper<Users> wrapper = new QueryWrapper<>();
+        wrapper.eq("name", name);
+        return mapper.selectOne(wrapper);
+    }
+
 }

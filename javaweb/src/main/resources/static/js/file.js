@@ -102,17 +102,24 @@ $("#inputuser").keypress(function (e) {
     }
 });
 
-function changeAuth(fileid) {
+function changeAuth() {
     //$("#authform")[0].reset();
-    var $authform= $("#authform");
-    console.log($authform.serialize)
+    var $authform = $("#authform");
+    //console.log($authform.serialize())
     $.ajax({
         type: "POST",
         url: "/changeauth",
         //async: false,
         data: $authform.serialize(),
         success: function (result) {
-
+            $.each(result, function (i, n) {
+                if (i == "error") {
+                    console.log(n)
+                } else {
+                    //console.log(n)
+                    getAuthUser(n);
+                }
+            })
         }
     })
 }
@@ -134,20 +141,36 @@ function getAuthUser(fileid) {
         processData: false,
         contentType: false,
         success: function (result) {
-            $.each(result,function(i,n){
-                $span = $('<a class="badge"></a>');
-                if(n=="Super"){
+            $.each(result, function (i, n) {
+                $span = $('<a class="badge" onclick="removeAuth(' + fileid + ',\'' + i + '\')"></a>');
+                if (n == "Super") {
                     return
-                }else
-                if(n=="Viewer"){
-                    $span.addClass("badge-warning")
-                }else
-                if(n=="Editor"){
-                    $span.addClass("badge-success")
-                }
+                } else
+                    if (n == "Viewer") {
+                        $span.addClass("badge-warning")
+                    } else
+                        if (n == "Editor") {
+                            $span.addClass("badge-success")
+                        }
                 $span.text(i);
                 $ulist.append($span.prop("outerHTML"))
             })
+        }
+    })
+}
+
+function removeAuth(fileid, username) {
+    var formData = new FormData();
+    formData.append("fileid", fileid);
+    formData.append("name", username);
+    $.ajax({
+        type: "POST",
+        url: "/delauth",
+        data: formData,
+        processData: false,
+        contentType: false,
+        success: function (result) {
+            getAuthUser(fileid);
         }
     })
 }
