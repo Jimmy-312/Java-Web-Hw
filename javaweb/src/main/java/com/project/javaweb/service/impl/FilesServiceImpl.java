@@ -2,6 +2,7 @@ package com.project.javaweb.service.impl;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -64,6 +65,7 @@ public class FilesServiceImpl implements FilesService {
     }
 
     public void deleteByIds(List<Integer> ids) {
+
         mapper.deleteBatchIds(ids);
     }
 
@@ -72,6 +74,10 @@ public class FilesServiceImpl implements FilesService {
     }
 
     public List<Files> selectByIds(List<Integer> idList){
+        if(idList.isEmpty()){
+            List<Files> list = new ArrayList<>();
+            return list;
+        }
         return mapper.selectBatchIds(idList);
     }
 }
