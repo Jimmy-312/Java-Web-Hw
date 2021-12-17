@@ -40,7 +40,7 @@ vditor = new Vditor("vditor", {
 
     // height: window.innerHeight,
     // height: screen.height,
-    height: 300,
+    height: 800,
 
 
     debugger: false,

@@ -59,10 +59,14 @@
         </div>
     </nav>
 
-    <h1>FUcK Doc!!!</h1>
+    <h1 th:text="${file.name}"  class="display-4 text-center" style="margin: auto 0;">FUcK Doc!!!</h1>
     <div class="container-fluid">
-        <div class="col">
-            <div id="vditor"></div>
+        <div class="row">
+            <div class="col-2"></div>
+            <div class="col-8">
+                <div id="vditor"></div>
+            </div>
+            <div class="col-2"></div>
         </div>
     </div>
     <button id='btnsave' hidden th:onclick="saveFile([[${fileid}]])"></button>
@@ -92,18 +96,18 @@
                 //console.log()
                 var level = e["level"];
                 console.log(level)
-                if(level=="Super"){
-                    
-                }else
-                if(level=="Editor"){
+                if (level == "Super") {
 
-                }else
-                if(level=="viewer"){
-                    vditor.disabled()
-                }else{
-                    window.history.go(-1);
-                    return
-                }
+                } else
+                    if (level == "Editor") {
+
+                    } else
+                        if (level == "viewer") {
+                            vditor.disabled()
+                        } else {
+                            window.history.go(-1);
+                            return
+                        }
                 vditor.setValue(e["content"]);
             }
         });

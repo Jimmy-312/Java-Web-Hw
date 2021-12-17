@@ -9,9 +9,9 @@ A homework of my lesson
 - file encrypt
 - improve file upload
 - online editor (key)
-    - user auth access of file
+    - ~~user auth access of file~~
         - ~~basic control~~
-        - auth settings
+        - ~~auth settings~~
     - multiply user edit
     - format transfer
     - ~~support markdown~~

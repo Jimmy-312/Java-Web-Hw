@@ -66,8 +66,10 @@ public class EditorController {
     @GetMapping("/editor/{fileid}")
     public String editorIndex(HttpSession session,@PathVariable("fileid") Integer fileId,Model model) throws IOException {
         Users user = (Users) session.getAttribute("user");
+        Files file = filesService.selectById(fileId);
         model.addAttribute("user", user);
         model.addAttribute("fileid", fileId);
+        model.addAttribute("file", file);
         return "editor";
     }
 
