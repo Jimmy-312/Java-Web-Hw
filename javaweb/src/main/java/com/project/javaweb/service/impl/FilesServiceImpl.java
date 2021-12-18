@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.project.javaweb.mapper.FilesMapper;
 import com.project.javaweb.pojo.Files;
 import com.project.javaweb.service.FilesService;
@@ -57,10 +57,11 @@ public class FilesServiceImpl implements FilesService {
         return mapper.selectList(wrapper);
     }
 
-    public List<Files> selectByPublic(String ispublic) {
+    public Page<Files> selectByPublic(String ispublic,Integer pageNum) {
+        Page<Files> page = new Page<>(pageNum,8);
         QueryWrapper<Files> wrapper = new QueryWrapper<>();
         wrapper.eq("ispublic", ispublic);
-        return mapper.selectList(wrapper);
+        return mapper.selectPage(page, wrapper);
     }
 
     public void deleteByIds(List<Integer> ids) {
@@ -72,11 +73,22 @@ public class FilesServiceImpl implements FilesService {
         return mapper.selectList(null);
     }
 
-    public List<Files> selectByIds(List<Integer> idList){
+    public Page<Files> selectByIds(List<Integer> idList,Integer pageNum){
+        Page<Files> list = new Page<>();
+        Integer sum;
         if(idList.isEmpty()){
-            List<Files> list = new ArrayList<>();
             return list;
         }
-        return mapper.selectBatchIds(idList);
+        List<Files> fileList = mapper.selectBatchIds(idList);
+        sum = idList.size()/8+((idList.size()%8!=0)?1:0);
+        list.setRecords(fileList.subList(8*(pageNum-1), ((pageNum)*8<=idList.size())?pageNum*8:idList.size()-1));
+        list.setCurrent(pageNum);
+        list.setTotal(sum);
+        return list;
+    }
+
+    public Page<Files> selectByPage(){
+        Page<Files> page = new Page<>(1,2);
+        return mapper.selectPage(page, null);
     }
 }

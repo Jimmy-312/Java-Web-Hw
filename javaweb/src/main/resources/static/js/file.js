@@ -224,11 +224,17 @@ function refreshtaglist() {
     })
 }
 
-function switch_tag(tagname, op) {
+function switch_tag(tagname, op,c=0) {
+    $("#allinfo").val(tagname)
+    if(c==1){
+        data="oc=1"
+    }else{
+        data="oc=0"
+    }
     $.ajax({
         type: "POST",
         url: "/" + op + "/" + tagname,
-        data: '',
+        data: data,
         success: function (result) {
             $("#fileform").html(result)
             loadTags()
@@ -358,10 +364,9 @@ function uploadFile() {
 }
 
 $("#fileform").submit(function (e) {
-
     $.ajax({
         type: "POST",
-        url: "/delfile",
+        url: "/delfile/",
         data: $(this).serialize(),
         success: function (result) {
             $("#fileform").html(result)
@@ -463,3 +468,20 @@ function resetAdd() {
     }
     $("#tagadd1").attr("disabled", "")
 }
+
+function changePage(op){
+    if(op==1){
+        url="/pageadd"
+    }else{
+        url="/pageminus"
+    }
+    $.ajax({
+        type: "POST",
+        url: url,
+        data: '',
+        success: function (result) {
+            switch_tag($("#allinfo").val(),$("#allinfo").attr("class"),1)
+        }
+    })
+}
+

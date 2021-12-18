@@ -100,7 +100,7 @@
                     </div>
                 </div>
                 <button type="button" data-toggle="modal" data-target="#upbox" class="btn btn-primary">Upload</button>
-                <button type="button" class="btn btn-danger" id="filedelete_btn" onclick="$('#fileform').submit()"
+                <button type="button" class="btn btn-danger" th:classappend="${page}" id="filedelete_btn" onclick="$('#fileform').submit()"
                     disabled>Delete</button>
             </div>
         </div>
@@ -159,7 +159,28 @@
                         </tbody>
                     </table>
                 </form>
+                <nav aria-label="Page navigation example">
+                    <input type="hidden" id="allinfo" th:class="${page}" value="All">
+                    <ul class="pagination">
+                        <li class="page-item">
+                            <a class="page-link" href="#" onclick="changePage(-1)" aria-label="Previous">
+                                <span aria-hidden="true">&laquo;</span>
+                            </a>
+                        </li>
+                        <li class="page-item"><a class="page-link" href="#">1</a></li>
+                        <li class="page-item"><a class="page-link" href="#">2</a></li>
+                        <li class="page-item"><a class="page-link" href="#">3</a></li>
+                        <li class="page-item">
+                            <a class="page-link" href="#" onclick="changePage(1)" aria-label="Next">
+                                <span aria-hidden="true">&raquo;</span>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
             </div>
+
+
+
         </div>
     </div>
 
@@ -280,10 +301,12 @@
 
 
                             <div class="form-check form-check-inline">
-                                <label><input type="radio" name="type" value="Viewer" onclick="$('#inputuser').prop('disabled',false)">Viewer</label>
+                                <label><input type="radio" name="type" value="Viewer"
+                                        onclick="$('#inputuser').prop('disabled',false)">Viewer</label>
                             </div>
                             <div class="form-check form-check-inline">
-                                <label><input type="radio" name="type" value="Editor" onclick="$('#inputuser').prop('disabled',false)">Editor</label>
+                                <label><input type="radio" name="type" value="Editor"
+                                        onclick="$('#inputuser').prop('disabled',false)">Editor</label>
                             </div>
                         </form>
                     </div>

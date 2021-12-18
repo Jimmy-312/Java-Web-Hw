@@ -2,6 +2,7 @@ package com.project.javaweb.service;
 
 import java.util.List;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.project.javaweb.pojo.Files;
 
 import org.springframework.web.multipart.MultipartFile;
@@ -13,8 +14,9 @@ public interface FilesService {
     List<Files> selectAll();
     Files selectByName(String name);
     List<Files> selectByOwner(int ownerid);
-    List<Files> selectByPublic(String string);
+    Page<Files> selectByPublic(String string, Integer pageNum);
     boolean uploadFile(String fileName, MultipartFile fileContent);
     void update(Files files);
-    List<Files> selectByIds(List<Integer> idList);
+    Page<Files> selectByIds(List<Integer> idList,Integer pageNum);
+    Page<Files> selectByPage();
 }
