@@ -59,8 +59,16 @@
         </div>
     </nav>
 
-    <h1 th:text="${file.name}"  class="display-4 text-center" style="margin: auto 0;">FUcK Doc!!!</h1>
+
+
     <div class="container-fluid">
+
+        <div class="col text-center" style="margin-top: 20px;">
+            <h1 th:text="${file.name}" class="display-5">FUcK Doc!!!</h1>
+
+            <p class="text-muted">Author: &nbsp; <span class="badge badge-danger" th:text="${owner.name}"></span></p>
+            <p class="text-muted">Your Authority: &nbsp; <span th:classappend="${badge}" class="badge" th:text="${level}"></span></p>
+        </div>
         <div class="row">
             <div class="col-2"></div>
             <div class="col-8">

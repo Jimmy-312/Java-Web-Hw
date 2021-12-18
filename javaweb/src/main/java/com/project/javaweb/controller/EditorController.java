@@ -13,9 +13,9 @@ import com.project.javaweb.pojo.Users;
 import com.project.javaweb.service.AuthFileService;
 import com.project.javaweb.service.FileSrcService;
 import com.project.javaweb.service.FilesService;
+import com.project.javaweb.service.UsersService;
 import com.project.javaweb.util.FileRW;
 
-import org.apache.poi.openxml4j.opc.internal.ContentType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -26,6 +26,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import ch.qos.logback.core.joran.conditional.ElseAction;
+
 @Controller
 public class EditorController {
     @Autowired
@@ -34,6 +36,8 @@ public class EditorController {
     private FileSrcService fileSrcService;
     @Autowired
     private AuthFileService authFileService;
+    @Autowired
+    private UsersService usersService;
 
     @RequestMapping("/editor")
     public String editor() {
@@ -67,9 +71,31 @@ public class EditorController {
     public String editorIndex(HttpSession session,@PathVariable("fileid") Integer fileId,Model model) throws IOException {
         Users user = (Users) session.getAttribute("user");
         Files file = filesService.selectById(fileId);
+        Users owner = usersService.selectById(file.getOwnerid());
+        String level = authFileService.selectByFileId(fileId, user.getId()).getLevel();
+        String badge = "badge-";
+
+        //System.out.println(level);
+
+        if(level.equals("Super")){
+            badge += "danger";
+        }else
+        if(level.equals("Viewer")){
+            badge += "warning";
+        }else
+        if(level.equals("Editor")){
+            badge += "success";
+        }else{
+            badge += "secondary";
+        }
+
         model.addAttribute("user", user);
         model.addAttribute("fileid", fileId);
         model.addAttribute("file", file);
+        model.addAttribute("owner", owner);
+        model.addAttribute("badge", badge);
+        model.addAttribute("level", level);
+
         return "editor";
     }
 
