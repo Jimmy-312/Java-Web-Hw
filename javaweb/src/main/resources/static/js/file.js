@@ -391,7 +391,7 @@ $("#fileform").submit(function (e) {
         success: function (result) {
             var tag = $("#allinfo").val();
             var page = $("#allinfo").attr("class")
-            $("#fileform").html(result)
+            //$("#fileform").html(result)
             reBind()
             refreshtaglist();
             switch_tag(tag,page,1);            

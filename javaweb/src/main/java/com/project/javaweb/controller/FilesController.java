@@ -211,6 +211,7 @@ public class FilesController {
         filesList = pageFiles.getRecords();
         model.addAttribute("filelist", filesList);
         model.addAttribute("pagesum", pageFiles.getPages());
+
         model.addAttribute("currentpage", pageNum);
         return "files::file_table";
     }
@@ -266,7 +267,7 @@ public class FilesController {
         List<Integer> fileIdList = tagFileService.getFileIdListByName(tagName);
         if (fileIdList.size() == 0) {
             tagName = "All";
-            //System.out.println(123);
+            // System.out.println(123);
         }
 
         if (tagName.equals("All")) {
@@ -277,7 +278,14 @@ public class FilesController {
             } else {
                 pageFiles = filesService.selectByPublic("Public", pageNum);
             }
-
+            if (pageNum > pageFiles.getPages()) {
+                pageNum -= 1;
+            }
+            if (page.equals("home")) {
+                pageFiles = filesService.selectByIds(authFileService.selectFileIdByUserId(user.getId()), pageNum);
+            } else {
+                pageFiles = filesService.selectByPublic("Public", pageNum);
+            }
             filesList = pageFiles.getRecords();
             model.addAttribute("pagesum", pageFiles.getPages());
             model.addAttribute("filelist", filesList);
@@ -304,12 +312,14 @@ public class FilesController {
         }
 
         pageFiles.setTotal(newFileList.size());
-        pageFiles.setCurrent(pageNum);
         pageFiles.setSize(8);
+        if (pageNum > pageFiles.getPages()) {
+            pageNum -= 1;
+        }
         pageFiles.setRecords(newFileList.subList(8 * (pageNum - 1),
                 ((pageNum) * 8 <= newFileList.size()) ? pageNum * 8 : newFileList.size()));
-
-        model.addAttribute("filelist", newFileList);
+        pageFiles.setCurrent(pageNum);
+        model.addAttribute("filelist", pageFiles.getRecords());
         model.addAttribute("pagesum", pageFiles.getPages());
         model.addAttribute("currentpage", pageNum);
         return "files::file_table";
