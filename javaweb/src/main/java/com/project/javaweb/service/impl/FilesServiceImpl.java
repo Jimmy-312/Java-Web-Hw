@@ -75,20 +75,32 @@ public class FilesServiceImpl implements FilesService {
 
     public Page<Files> selectByIds(List<Integer> idList,Integer pageNum){
         Page<Files> list = new Page<>();
-        Integer sum;
+        //Integer sum;
         if(idList.isEmpty()){
             return list;
         }
         List<Files> fileList = mapper.selectBatchIds(idList);
-        sum = idList.size()/8+((idList.size()%8!=0)?1:0);
-        list.setRecords(fileList.subList(8*(pageNum-1), ((pageNum)*8<=idList.size())?pageNum*8:idList.size()-1));
+        //sum = idList.size()/8+((idList.size()%8!=0)?1:0);
+        list.setRecords(fileList.subList(8*(pageNum-1), ((pageNum)*8<=idList.size())?pageNum*8:idList.size()));
         list.setCurrent(pageNum);
-        list.setTotal(sum);
+        list.setTotal(fileList.size());
+        list.setSize(8);
         return list;
     }
 
-    public Page<Files> selectByPage(){
-        Page<Files> page = new Page<>(1,2);
-        return mapper.selectPage(page, null);
-    }
+	@Override
+	public List<Files> selectByIds(List<Integer> idList) {
+        List<Files> list = new ArrayList<>();
+        if(idList.isEmpty()){
+            return list;
+        }
+        return mapper.selectBatchIds(idList);
+	}
+
+	@Override
+	public List<Files> selectByPublic(String string) {
+		QueryWrapper<Files> wrapper = new QueryWrapper<>();
+        wrapper.eq("ispublic", string);
+        return mapper.selectList(wrapper);
+	}
 }

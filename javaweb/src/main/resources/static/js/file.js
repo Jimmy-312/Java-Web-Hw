@@ -26,6 +26,7 @@ function reBind() {
 reBind()
 loadTags()
 loadAuth()
+refreshtaglist()
 
 function tdclick(e) {
     var $temp = $(e);
@@ -213,7 +214,7 @@ function refreshtaglist() {
     var path = window.location.pathname.replace("/", "");
     $.ajax({
         type: "POST",
-        url: "/" + path + "/" + "refreshTaglist",
+        url: "/" + path + "refreshTaglist",
         data: '',
         success: function (result) {
             $("#taglist").html(result)
@@ -485,3 +486,13 @@ function changePage(op){
     })
 }
 
+function transpage(page){
+    $.ajax({
+        type: "POST",
+        url: '/changepage/'+page,
+        data: '',
+        success: function (result) {
+            switch_tag($("#allinfo").val(),$("#allinfo").attr("class"),1)
+        }
+    })
+}

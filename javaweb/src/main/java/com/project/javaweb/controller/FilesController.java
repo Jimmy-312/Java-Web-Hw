@@ -9,11 +9,8 @@ import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpSession;
-import javax.websocket.server.PathParam;
 
 import org.springframework.ui.Model;
-
-import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.project.javaweb.pojo.AuthFile;
 import com.project.javaweb.pojo.FileSrc;
@@ -30,6 +27,7 @@ import com.project.javaweb.util.FileRW;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -52,7 +50,7 @@ public class FilesController {
 
     private Integer pageNum = 1;
 
-    @RequestMapping("/{op}")
+    @GetMapping("/{op}/")
     public String getMyFiles(@PathVariable("op") String page, HttpSession session, Model model) {
         Users user = (Users) session.getAttribute("user");
         List<Files> filesList;
@@ -71,7 +69,8 @@ public class FilesController {
         model.addAttribute("user", user);
         model.addAttribute("filelist", filesList);
         model.addAttribute("page", page);
-
+        model.addAttribute("pagesum", pageFiles.getPages());
+        model.addAttribute("currentpage", pageNum);
         return "files";
     }
 
@@ -133,6 +132,8 @@ public class FilesController {
 
         filesList = pageFiles.getRecords();
         model.addAttribute("filelist", filesList);
+        model.addAttribute("pagesum", pageFiles.getPages());
+        model.addAttribute("currentpage", pageNum);
         return "files::file_table";
     }
 
@@ -189,7 +190,8 @@ public class FilesController {
 
         filesList = pageFiles.getRecords();
         model.addAttribute("filelist", filesList);
-
+        model.addAttribute("pagesum", pageFiles.getPages());
+        model.addAttribute("currentpage", pageNum);
         return "files::file_table";
     }
 
@@ -208,6 +210,8 @@ public class FilesController {
 
         filesList = pageFiles.getRecords();
         model.addAttribute("filelist", filesList);
+        model.addAttribute("pagesum", pageFiles.getPages());
+        model.addAttribute("currentpage", pageNum);
         return "files::file_table";
     }
 
@@ -246,6 +250,8 @@ public class FilesController {
         pageFiles = filesService.selectByIds(authFileService.selectFileIdByUserId(user.getId()), pageNum);
         filesList = pageFiles.getRecords();
         model.addAttribute("filelist", filesList);
+        model.addAttribute("pagesum", pageFiles.getPages());
+        model.addAttribute("currentpage", pageNum);
         return "files::file_table";
     }
 
@@ -267,7 +273,10 @@ public class FilesController {
             }
 
             filesList = pageFiles.getRecords();
+            model.addAttribute("pagesum", pageFiles.getPages());
             model.addAttribute("filelist", filesList);
+            model.addAttribute("currentpage", pageNum);
+            //System.out.println(pageFiles.getPages());
 
             return "files::file_table";
         }
@@ -276,14 +285,12 @@ public class FilesController {
         List<Files> fileList;
         List<Files> newFileList = new ArrayList<Files>();
 
-        Page<Files> pageFiles;
+        Page<Files> pageFiles = new Page<>();
         if (page.equals("home")) {
-            pageFiles = filesService.selectByIds(authFileService.selectFileIdByUserId(user.getId()), pageNum);
+            fileList = filesService.selectByIds(authFileService.selectFileIdByUserId(user.getId()));
         } else {
-            pageFiles = filesService.selectByPublic("Public", pageNum);
+            fileList = filesService.selectByPublic("Public");
         }
-
-        fileList = pageFiles.getRecords();
 
         for (Files file : fileList) {
             if (fileIdList.contains(file.getId())) {
@@ -291,7 +298,14 @@ public class FilesController {
             }
         }
 
+        pageFiles.setTotal(newFileList.size());
+        pageFiles.setCurrent(pageNum);
+        pageFiles.setSize(8);
+        pageFiles.setRecords(newFileList.subList(8*(pageNum-1), ((pageNum)*8<=newFileList.size())?pageNum*8:newFileList.size()));
+
         model.addAttribute("filelist", newFileList);
+        model.addAttribute("pagesum", pageFiles.getPages());
+        model.addAttribute("currentpage", pageNum);
         return "files::file_table";
     }
 
@@ -300,15 +314,12 @@ public class FilesController {
         Users user = (Users) session.getAttribute("user");
         List<Files> filesList;
 
-        Page<Files> pageFiles;
         if (page.equals("home")) {
-            pageFiles = filesService.selectByIds(authFileService.selectFileIdByUserId(user.getId()), pageNum);
+            filesList = filesService.selectByIds(authFileService.selectFileIdByUserId(user.getId()));
         } else {
-            pageFiles = filesService.selectByPublic("Public", pageNum);
+            filesList = filesService.selectByPublic("Public");
         }
-
-        filesList = pageFiles.getRecords();
-
+        //System.out.println(filesList);
         model.addAttribute("tags", tagFileService.getTagNameByFileList(filesList));
         model.addAttribute("page", page);
         return "files::tags_list";
@@ -395,7 +406,16 @@ public class FilesController {
     @ResponseBody
     public String pageminus(){
         pageNum-=1;
+        pageNum=pageNum<1?1:pageNum;
         return "pageminus";
     }
+
+    @PostMapping("/changepage/{op}")
+    @ResponseBody
+    public String changepage(@PathVariable("op") Integer page){
+        pageNum=page;
+        return "pagechange";
+    }
+
 
 }

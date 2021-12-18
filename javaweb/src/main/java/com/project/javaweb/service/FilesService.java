@@ -18,5 +18,6 @@ public interface FilesService {
     boolean uploadFile(String fileName, MultipartFile fileContent);
     void update(Files files);
     Page<Files> selectByIds(List<Integer> idList,Integer pageNum);
-    Page<Files> selectByPage();
+    List<Files> selectByIds(List<Integer> selectFileIdByUserId);
+    List<Files> selectByPublic(String string);
 }

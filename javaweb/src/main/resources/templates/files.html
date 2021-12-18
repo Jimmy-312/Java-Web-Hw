@@ -35,7 +35,7 @@
 
 <body>
     <nav class="navbar navbar-expand-lg navbar-light bg-light sticky-top">
-        <a class="navbar-brand" href="/home">
+        <a class="navbar-brand" href="/home/">
             <i class="bi bi-folder2" width="30" height="30"></i>
             JFiles</a>
 
@@ -100,8 +100,8 @@
                     </div>
                 </div>
                 <button type="button" data-toggle="modal" data-target="#upbox" class="btn btn-primary">Upload</button>
-                <button type="button" class="btn btn-danger" th:classappend="${page}" id="filedelete_btn" onclick="$('#fileform').submit()"
-                    disabled>Delete</button>
+                <button type="button" class="btn btn-danger" th:classappend="${page}" id="filedelete_btn"
+                    onclick="$('#fileform').submit()" disabled>Delete</button>
             </div>
         </div>
         <div class="row" style="margin-top: 1%;">
@@ -122,8 +122,8 @@
                 </div>
             </div>
 
-            <div class="col">
-                <form id="fileform" method="POST" th:fragment="file_table">
+            <div class="col" th:fragment="file_table">
+                <form id="fileform" method="POST" >
                     <table class="table table-hover">
                         <thead>
                             <tr>
@@ -158,28 +158,29 @@
 
                         </tbody>
                     </table>
+                    <nav aria-label="Page navigation example">
+                        <ul class="pagination">
+                            <li class="page-item" th:classappend="${currentpage eq 1}?'disabled':''">
+                                <a class="page-link" href="#" onclick="changePage(-1)" aria-label="Previous">
+                                    <span aria-hidden="true">&laquo;</span>
+                                </a>
+                            </li>
+                            <li th:onclick="transpage([[${iterStat.index+1}]])"  th:each="i,iterStat:${#numbers.sequence(1,pagesum)}" class="page-item" th:classappend="${iterStat.index+1 eq currentpage}?'active':''"><a 
+                                    class="page-link" href="#" th:text="${iterStat.index+1}">1</a>
+                                </li>
+                            <li class="page-item" th:classappend="${currentpage eq pagesum}?'disabled':''">
+                                <a class="page-link" href="#" onclick="changePage(1)" aria-label="Next">
+                                    <span aria-hidden="true">&raquo;</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </nav>
                 </form>
-                <nav aria-label="Page navigation example">
-                    <input type="hidden" id="allinfo" th:class="${page}" value="All">
-                    <ul class="pagination">
-                        <li class="page-item">
-                            <a class="page-link" href="#" onclick="changePage(-1)" aria-label="Previous">
-                                <span aria-hidden="true">&laquo;</span>
-                            </a>
-                        </li>
-                        <li class="page-item"><a class="page-link" href="#">1</a></li>
-                        <li class="page-item"><a class="page-link" href="#">2</a></li>
-                        <li class="page-item"><a class="page-link" href="#">3</a></li>
-                        <li class="page-item">
-                            <a class="page-link" href="#" onclick="changePage(1)" aria-label="Next">
-                                <span aria-hidden="true">&raquo;</span>
-                            </a>
-                        </li>
-                    </ul>
-                </nav>
+                
+
             </div>
 
-
+            <input type="hidden" id="allinfo" th:class="${page}" value="All">
 
         </div>
     </div>

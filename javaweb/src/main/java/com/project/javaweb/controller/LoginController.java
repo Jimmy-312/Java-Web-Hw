@@ -21,7 +21,7 @@ public class LoginController {
     @RequestMapping("/login")
     public String displayLogin(HttpSession session) {
         if(session.getAttribute("user")!=null){
-            return "redirect:/home";
+            return "redirect:/home/";
         }
 
         return "login";
@@ -39,7 +39,7 @@ public class LoginController {
 
         if(user!=null && userIn.getPasswd().equals(user.getPasswd())){
             session.setAttribute("user", user);
-            return "redirect:/home";
+            return "redirect:/home/";
         }
 
         return "login";
