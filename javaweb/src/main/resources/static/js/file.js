@@ -212,6 +212,8 @@ function removeAuth(fileid, username) {
 
 function refreshtaglist() {
     var path = window.location.pathname.replace("/", "");
+    var tag = $("#allinfo").val();
+
     $.ajax({
         type: "POST",
         url: "/" + path + "refreshTaglist",
@@ -221,6 +223,22 @@ function refreshtaglist() {
             reBind()
             loadTags()
             loadAuth()
+            var f=0;
+            $("#taglist").children().children().each(function(e){
+                if($(this).text()!=tag){
+                    $(this).attr("class","nav-link")
+                    $(this).attr("aria-selected","false")
+                }else{
+                    $(this).attr("class","nav-link active")
+                    $(this).attr("aria-selected","true")
+                    f=1;
+                }
+            })
+            if(f==0){
+                $("#alltag").attr("class","nav-link active")
+                $("#alltag").attr("aria-selected","false")
+                console.log(123)
+            }
         }
     })
 }
@@ -242,7 +260,7 @@ function switch_tag(tagname, op,c=0) {
             loadAuth()
             reBind()
             $("#filedelete_btn").prop("disabled", true)
-
+            
         }
     })
 
@@ -295,8 +313,9 @@ function editSubmit() {
         url: "/editfile",
         data: $("#newfileform").serialize(),
         success: function (result) {
-            $("#fileform").html(result)
-            reBind()
+            var tag = $("#allinfo").val();
+            var page = $("#allinfo").attr("class")
+            switch_tag(tag,page,1); 
             refreshtaglist();
             loadTags();
             loadAuth()
@@ -370,9 +389,12 @@ $("#fileform").submit(function (e) {
         url: "/delfile/",
         data: $(this).serialize(),
         success: function (result) {
+            var tag = $("#allinfo").val();
+            var page = $("#allinfo").attr("class")
             $("#fileform").html(result)
             reBind()
             refreshtaglist();
+            switch_tag(tag,page,1);            
         }
     })
     $("#checkAll").prop('checked', false);
@@ -387,8 +409,9 @@ $("#newfileform").submit(function (e) {
         url: "/addfile",
         data: $("#newfileform").serialize(),
         success: function (result) {
-            $("#fileform").html(result)
-            reBind()
+            var tag = $("#allinfo").val();
+            var page = $("#allinfo").attr("class")
+            switch_tag(tag,page,1); 
             refreshtaglist();
             loadTags();
             loadAuth()

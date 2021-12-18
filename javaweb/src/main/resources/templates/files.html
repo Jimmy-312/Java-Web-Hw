@@ -110,7 +110,7 @@
                     <div class="col-sm-12">
                         <div class="nav flex-column nav-pills" role="tablist" aria-orientation="vertical" id="taglist"
                             th:fragment="tags_list">
-                            <a class="nav-link active" id="v-pills-home-tab" data-toggle="pill" href="#" role="tab"
+                            <a class="nav-link active" id="alltag" data-toggle="pill" href="#" role="tab"
                                 aria-controls="v-pills-home" aria-selected="true"
                                 th:onclick="switch_tag('All',[[${page}]])">All</a>
                             <a th:each="tagname : ${tags}" class="nav-link" id="v-pills-profile-tab" data-toggle="pill"

@@ -257,12 +257,18 @@ public class FilesController {
 
     @PostMapping("/{op}/{tagname}")
     public String switchTag(@PathVariable("op") String page, @PathVariable("tagname") String tagName, Model model,
-            HttpSession session,@RequestParam("oc") Integer oc) {
+            HttpSession session, @RequestParam("oc") Integer oc) {
         Users user = (Users) session.getAttribute("user");
-        if(oc.equals(0)){
+        if (oc.equals(0)) {
             pageNum = 1;
         }
-       
+
+        List<Integer> fileIdList = tagFileService.getFileIdListByName(tagName);
+        if (fileIdList.size() == 0) {
+            tagName = "All";
+            //System.out.println(123);
+        }
+
         if (tagName.equals("All")) {
             List<Files> filesList;
             Page<Files> pageFiles;
@@ -276,12 +282,11 @@ public class FilesController {
             model.addAttribute("pagesum", pageFiles.getPages());
             model.addAttribute("filelist", filesList);
             model.addAttribute("currentpage", pageNum);
-            //System.out.println(pageFiles.getPages());
+            // System.out.println(pageFiles.getPages());
 
             return "files::file_table";
         }
 
-        List<Integer> fileIdList = tagFileService.getFileIdListByName(tagName);
         List<Files> fileList;
         List<Files> newFileList = new ArrayList<Files>();
 
@@ -301,7 +306,8 @@ public class FilesController {
         pageFiles.setTotal(newFileList.size());
         pageFiles.setCurrent(pageNum);
         pageFiles.setSize(8);
-        pageFiles.setRecords(newFileList.subList(8*(pageNum-1), ((pageNum)*8<=newFileList.size())?pageNum*8:newFileList.size()));
+        pageFiles.setRecords(newFileList.subList(8 * (pageNum - 1),
+                ((pageNum) * 8 <= newFileList.size()) ? pageNum * 8 : newFileList.size()));
 
         model.addAttribute("filelist", newFileList);
         model.addAttribute("pagesum", pageFiles.getPages());
@@ -319,7 +325,7 @@ public class FilesController {
         } else {
             filesList = filesService.selectByPublic("Public");
         }
-        //System.out.println(filesList);
+        // System.out.println(filesList);
         model.addAttribute("tags", tagFileService.getTagNameByFileList(filesList));
         model.addAttribute("page", page);
         return "files::tags_list";
@@ -397,25 +403,24 @@ public class FilesController {
 
     @PostMapping("/pageadd")
     @ResponseBody
-    public String pageadd(){
-        pageNum+=1;
+    public String pageadd() {
+        pageNum += 1;
         return "pageadd";
     }
 
     @PostMapping("/pageminus")
     @ResponseBody
-    public String pageminus(){
-        pageNum-=1;
-        pageNum=pageNum<1?1:pageNum;
+    public String pageminus() {
+        pageNum -= 1;
+        pageNum = pageNum < 1 ? 1 : pageNum;
         return "pageminus";
     }
 
     @PostMapping("/changepage/{op}")
     @ResponseBody
-    public String changepage(@PathVariable("op") Integer page){
-        pageNum=page;
+    public String changepage(@PathVariable("op") Integer page) {
+        pageNum = page;
         return "pagechange";
     }
-
 
 }
