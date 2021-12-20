@@ -8,7 +8,7 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 
 public class FileRW {
-    private static String filepath = "/home/jimmy/cloudfile/";
+    private static String filepath = "/home/root/cloudfile/";
 
     public static void writeFile(String path, String content) throws UnsupportedEncodingException {
         File file = new File(filepath + path);
