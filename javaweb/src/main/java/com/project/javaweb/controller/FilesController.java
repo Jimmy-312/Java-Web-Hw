@@ -71,7 +71,7 @@ public class FilesController {
         model.addAttribute("user", user);
         model.addAttribute("filelist", filesList);
         model.addAttribute("page", page);
-        model.addAttribute("pagesum", pageFiles.getPages());
+        model.addAttribute("pagesum", (pageFiles.getPages()==0)?1:pageFiles.getPages());
         model.addAttribute("currentpage", pageNum);
         return "files";
     }
@@ -212,7 +212,7 @@ public class FilesController {
 
         filesList = pageFiles.getRecords();
         model.addAttribute("filelist", filesList);
-        model.addAttribute("pagesum", pageFiles.getPages());
+        model.addAttribute("pagesum", (pageFiles.getPages()==0)?1:pageFiles.getPages());
 
         model.addAttribute("currentpage", pageNum);
         return "files::file_table";
@@ -297,12 +297,15 @@ public class FilesController {
                 } else {
                     pageFiles = filesService.selectByPublic("Public", pageNum);
                 }
+                if(pageFiles.getTotal()==0){
+                    break;
+                }
 
                 flag = true;
             } while (pageNum > pageFiles.getPages());
-
+            
             filesList = pageFiles.getRecords();
-            model.addAttribute("pagesum", pageFiles.getPages());
+            model.addAttribute("pagesum", (pageFiles.getPages()==0)?1:pageFiles.getPages());
             model.addAttribute("filelist", filesList);
             model.addAttribute("currentpage", pageNum);
             // System.out.println(pageFiles.getPages());
