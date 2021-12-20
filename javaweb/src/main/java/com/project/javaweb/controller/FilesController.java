@@ -225,6 +225,8 @@ public class FilesController {
         String fileName = fileInfo[0];
         Files file = new Files();
         FileSrc src = new FileSrc();
+        AuthFile auth = new AuthFile();
+        TagFile tag = new TagFile();
 
         file.setName(fileName);
         file.setOwnerid(user.getId());
@@ -234,11 +236,21 @@ public class FilesController {
         file.setIspublic(isPublic);
         filesService.insert(file);
 
+
         src.setFileid(file.getId());
         fileSrcService.insert(src);
-        System.out.println(src.getId() + "." + fileType);
+        //System.out.println(src.getId() + "." + fileType);
         src.setSrc(src.getId() + "." + fileType);
         fileSrcService.update(src);
+
+        auth.setFileid(file.getId());
+        auth.setLevel("Super");
+        auth.setUserid(user.getId());
+        authFileService.insert(auth);
+
+        tag.setFileid(file.getId());
+        tag.setName("Upload");
+        tagFileService.insert(tag);
 
         if (filesService.uploadFile(src.getSrc(), fileContent)) {
             System.out.println(fileName);
@@ -273,19 +285,20 @@ public class FilesController {
         if (tagName.equals("All")) {
             List<Files> filesList;
             Page<Files> pageFiles;
-            if (page.equals("home")) {
-                pageFiles = filesService.selectByIds(authFileService.selectFileIdByUserId(user.getId()), pageNum);
-            } else {
-                pageFiles = filesService.selectByPublic("Public", pageNum);
-            }
-            if (pageNum > pageFiles.getPages()) {
-                pageNum -= 1;
-            }
-            if (page.equals("home")) {
-                pageFiles = filesService.selectByIds(authFileService.selectFileIdByUserId(user.getId()), pageNum);
-            } else {
-                pageFiles = filesService.selectByPublic("Public", pageNum);
-            }
+            Boolean flag = false;
+            do {
+                if (flag) {
+                    pageNum -= 1;
+                }
+                if (page.equals("home")) {
+                    pageFiles = filesService.selectByIds(authFileService.selectFileIdByUserId(user.getId()), pageNum);
+                } else {
+                    pageFiles = filesService.selectByPublic("Public", pageNum);
+                }
+
+                flag = true;
+            } while (pageNum > pageFiles.getPages());
+
             filesList = pageFiles.getRecords();
             model.addAttribute("pagesum", pageFiles.getPages());
             model.addAttribute("filelist", filesList);

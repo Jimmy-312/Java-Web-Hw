@@ -44,4 +44,10 @@ public class UsersServiceImpl implements UsersService {
         return mapper.selectOne(wrapper);
     }
 
+    public void update(Users user){
+        QueryWrapper<Users> wrapper =new QueryWrapper<>();
+        wrapper.eq("id",user.getId());
+        mapper.update(user, wrapper);
+    }
+
 }

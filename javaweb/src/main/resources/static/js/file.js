@@ -343,7 +343,6 @@ $("#upfile").on("change", function (e) {
 
 function uploadFile() {
     var file = $('#upfile').get(0).files;
-    //console.log(file)
     var formData = new FormData();
     // for (var i = 0; i < pic.length; i++) {
     //     formData.append("pic['+i+']", pic[i]);
@@ -354,7 +353,6 @@ function uploadFile() {
         formData.append("ispublic", "Private");
     }
     formData.append("file", file[0]);
-
 
 
     $.ajax({
@@ -371,14 +369,13 @@ function uploadFile() {
         //     }
         // },
         success: function (e) {
-            $("#fileform").html(e)
+            $("#allinfo").val("Upload");
+            var tag = $("#allinfo").val();
+            var page = $("#allinfo").attr("class")
+            //$("#fileform").html(result)
             reBind()
-            loadTags()
-            loadAuth()
-            $("#upfileform")[0].reset()
-            $("#upfilename").text("")
-            $("#upfilesize").text("");
-
+            refreshtaglist();
+            switch_tag("Upload",page,1); 
         }
     });
 }
@@ -516,6 +513,23 @@ function transpage(page){
         data: '',
         success: function (result) {
             switch_tag($("#allinfo").val(),$("#allinfo").attr("class"),1)
+        }
+    })
+}
+
+
+function changepwd(){
+    $.ajax({
+        type: "POST",
+        url: "/changepasswd",
+        data: $("#pwdform").serialize(),
+        success: function (result) {
+            if(result=='okay'){
+                $("#pwdform")[0].reset()
+                $("#pwdbox").modal()
+            }else{
+                $("#oldpwdinput").addClass("is-invalid")
+            }
         }
     })
 }
