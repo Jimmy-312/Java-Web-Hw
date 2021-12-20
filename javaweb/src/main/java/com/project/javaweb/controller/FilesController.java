@@ -446,4 +446,17 @@ public class FilesController {
         return "pagechange";
     }
 
+
+    @PostMapping("/search")
+    public String searchFile(@RequestParam("words") String words,Model model){
+        System.out.println(words);
+        List<Files> filelist = new ArrayList<>();
+
+        filelist = filesService.searchByName(words);
+
+        model.addAttribute("filelist", filelist);
+        model.addAttribute("pagesum", 1);
+        model.addAttribute("currentpage", 1);
+        return "files::file_table";
+    }
 }

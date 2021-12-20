@@ -73,14 +73,16 @@ public class UsersController {
     public String registerPost(@RequestParam Map<String,String> info){
         Users user = new Users();
 
+        if(info.get("code").equals("bjt")){
+            return "secret";
+        }
+
         user.setLevel("0");
         user.setName(info.get("name"));
         user.setPasswd(info.get("passwd"));
         user.setUserid(info.get("userid"));
         user.setGender(info.get("gender"));
-        if(info.get("code").equals("bjt")){
 
-        }
         usersService.insert(user);
         return "redirect:/home";
     }

@@ -20,4 +20,5 @@ public interface FilesService {
     Page<Files> selectByIds(List<Integer> idList,Integer pageNum);
     List<Files> selectByIds(List<Integer> selectFileIdByUserId);
     List<Files> selectByPublic(String string);
+    List<Files> searchByName(String name);
 }

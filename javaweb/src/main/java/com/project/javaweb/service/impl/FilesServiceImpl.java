@@ -34,7 +34,7 @@ public class FilesServiceImpl implements FilesService {
         return mapper.selectOne(wrapper);
     }
 
-    public void update(Files files){
+    public void update(Files files) {
         QueryWrapper<Files> wrapper = new QueryWrapper<>();
         wrapper.eq("id", files.getId());
         mapper.update(files, wrapper);
@@ -57,8 +57,8 @@ public class FilesServiceImpl implements FilesService {
         return mapper.selectList(wrapper);
     }
 
-    public Page<Files> selectByPublic(String ispublic,Integer pageNum) {
-        Page<Files> page = new Page<>(pageNum,8);
+    public Page<Files> selectByPublic(String ispublic, Integer pageNum) {
+        Page<Files> page = new Page<>(pageNum, 8);
         QueryWrapper<Files> wrapper = new QueryWrapper<>();
         wrapper.eq("ispublic", ispublic);
         return mapper.selectPage(page, wrapper);
@@ -73,34 +73,42 @@ public class FilesServiceImpl implements FilesService {
         return mapper.selectList(null);
     }
 
-    public Page<Files> selectByIds(List<Integer> idList,Integer pageNum){
+    public Page<Files> selectByIds(List<Integer> idList, Integer pageNum) {
         Page<Files> list = new Page<>();
-        //Integer sum;
-        if(idList.isEmpty()){
+        // Integer sum;
+        if (idList.isEmpty()) {
             return list;
         }
         List<Files> fileList = mapper.selectBatchIds(idList);
-        //sum = idList.size()/8+((idList.size()%8!=0)?1:0);
-        list.setRecords(fileList.subList(8*(pageNum-1), ((pageNum)*8<=idList.size())?pageNum*8:idList.size()));
+        // sum = idList.size()/8+((idList.size()%8!=0)?1:0);
+        list.setRecords(
+                fileList.subList(8 * (pageNum - 1), ((pageNum) * 8 <= idList.size()) ? pageNum * 8 : idList.size()));
         list.setCurrent(pageNum);
         list.setTotal(fileList.size());
         list.setSize(8);
         return list;
     }
 
-	@Override
-	public List<Files> selectByIds(List<Integer> idList) {
+    @Override
+    public List<Files> selectByIds(List<Integer> idList) {
         List<Files> list = new ArrayList<>();
-        if(idList.isEmpty()){
+        if (idList.isEmpty()) {
             return list;
         }
         return mapper.selectBatchIds(idList);
-	}
+    }
 
-	@Override
-	public List<Files> selectByPublic(String string) {
-		QueryWrapper<Files> wrapper = new QueryWrapper<>();
+    @Override
+    public List<Files> selectByPublic(String string) {
+        QueryWrapper<Files> wrapper = new QueryWrapper<>();
         wrapper.eq("ispublic", string);
         return mapper.selectList(wrapper);
-	}
+    }
+
+    public List<Files> searchByName(String name) {
+        QueryWrapper<Files> wrapper = new QueryWrapper<>();
+        wrapper.like("name", name);
+        return mapper.selectList(wrapper);
+    }
+
 }

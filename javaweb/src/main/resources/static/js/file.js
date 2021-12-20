@@ -380,11 +380,11 @@ function uploadFile() {
     });
 }
 
-$("#fileform").submit(function (e) {
+function delfile() {
     $.ajax({
         type: "POST",
         url: "/delfile/",
-        data: $(this).serialize(),
+        data: $("#fileform").serialize(),
         success: function (result) {
             var tag = $("#allinfo").val();
             var page = $("#allinfo").attr("class")
@@ -396,7 +396,7 @@ $("#fileform").submit(function (e) {
     })
     $("#checkAll").prop('checked', false);
     return false
-})
+}
 
 
 $("#newfileform").submit(function (e) {
@@ -530,6 +530,22 @@ function changepwd(){
             }else{
                 $("#oldpwdinput").addClass("is-invalid")
             }
+        }
+    })
+}
+
+
+function searchfile(){
+    var words = $("#keywords").val();
+    $.ajax({
+        type: "POST",
+        url: "/search",
+        data: 'words='+words,
+        success: function (result) {
+            $("#filetable").html(result);
+            reBind();
+            loadTags();
+            loadAuth();
         }
     })
 }
