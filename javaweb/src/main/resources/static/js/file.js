@@ -89,7 +89,7 @@ function loadAuth() {
                 $authtag.text(result)
                 $auth.html($authtag)
                 if (result == "Super") {
-                    $auth.append("<i class=\"bi bi-wrench\" onclick=\"tdclick($(this).parent());$(\'#authbox\').modal();getAuthUser(" + $auth[0].classList[2] + ");\" style=\"margin-left:15px\"></i>")
+                    $auth.append("<i class=\"bi bi-wrench\" onclick=\"tdclick($(this).parent());$(\'#authbox\').modal();getAuthUser(" + $auth[0].classList[2] + ");\" style=\"margin-left:15px\"></i><i class=\"bi bi-send\" style=\"margin-left:5px\" onclick=\"tdclick($(this).parent());sharefile(" + $auth[0].classList[2] + ")\"></i>")
                     $authtag.addClass("badge badge-danger")
                 } else
                     if (result == "Viewer") {
@@ -546,6 +546,20 @@ function searchfile(){
             reBind();
             loadTags();
             loadAuth();
+        }
+    })
+}
+
+function sharefile(fileid){
+    $.ajax({
+        type: "POST",
+        url: "/share",
+        data: 'fileid='+fileid,
+        success: function (result) {
+            var url = window.location.origin + result
+            //console.log(url)
+            $("#sharelink").html(url)
+            $('.toast').toast('show')
         }
     })
 }

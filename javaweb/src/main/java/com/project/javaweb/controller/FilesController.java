@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpSession;
+import javax.swing.text.AbstractDocument.Content;
 
 import org.springframework.ui.Model;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -22,6 +23,7 @@ import com.project.javaweb.service.FileSrcService;
 import com.project.javaweb.service.FilesService;
 import com.project.javaweb.service.TagFileService;
 import com.project.javaweb.service.UsersService;
+import com.project.javaweb.util.DesUtil;
 import com.project.javaweb.util.FileRW;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -458,5 +460,55 @@ public class FilesController {
         model.addAttribute("pagesum", 1);
         model.addAttribute("currentpage", 1);
         return "files::file_table";
+    }
+
+
+    @PostMapping("/share")
+    @ResponseBody
+    public String processShare(@RequestParam("fileid") String fileid) throws UnsupportedEncodingException{
+        String url = "/share/";
+        String content = DesUtil.DESEncrypt("Jimmy312", fileid); 
+        url += content;
+        //System.out.println(url);
+
+        return url;
+    }
+
+    @GetMapping("/share/{code}")
+    public String share(@PathVariable("code") String code,HttpSession session,Model model) throws UnsupportedEncodingException{
+        Users user = (Users) session.getAttribute("user");
+
+        Integer fileid;
+        String content = DesUtil.DESDecrypt("Jimmy312", code);
+        if(content!=null){
+            fileid = Integer.valueOf(content);
+        }else{
+            model.addAttribute("info","err");
+            return "share";
+        }
+
+        Files file = filesService.selectById(fileid);
+        if(filesService.selectById(fileid)==null){
+            model.addAttribute("info","err");
+            return "share";
+        }
+
+        AuthFile authFile = authFileService.selectByFileId(fileid, user.getId());
+        if (authFile == null) {
+            authFile = new AuthFile();
+            authFile.setFileid(fileid);
+            authFile.setUserid(user.getId());
+            authFile.setLevel("Viewer");
+            authFileService.insert(authFile);
+        } else {
+            authFile.setLevel("Viewer");
+            authFileService.update(authFile);
+        }
+
+        model.addAttribute("info","ok");
+        model.addAttribute("file", file);
+        model.addAttribute("user", user);
+
+        return "share";
     }
 }

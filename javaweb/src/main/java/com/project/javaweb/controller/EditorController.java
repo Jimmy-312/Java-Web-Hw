@@ -26,7 +26,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import ch.qos.logback.core.joran.conditional.ElseAction;
 
 @Controller
 public class EditorController {
@@ -60,8 +59,8 @@ public class EditorController {
         String content;
         String fileName = fileSrcService.selectByFileId(fileId).getSrc();
 
-        content=FileRW.readFile(fileName);
         info.put("level", level);
+        content=FileRW.readFile(fileName);
         info.put("content", content);
         //System.out.println(info);
         return info;
