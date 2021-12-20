@@ -16,7 +16,7 @@ public class UploadController {
     @PostMapping("/upload/img")
     public Map<String, Object> hello(@RequestParam("file[]") MultipartFile content) throws IllegalStateException, IOException{
         String filename = content.getOriginalFilename();
-        String filepath = "img/"+filename;
+        String filepath = "/root/cloudfile/"+filename;
         File dest = new File(filepath);
         Map<String,Object> info = new HashMap<>();
         Map<String,Object> data = new HashMap<>();
