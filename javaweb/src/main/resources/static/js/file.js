@@ -540,7 +540,7 @@ function searchfile(){
     $.ajax({
         type: "POST",
         url: "/search",
-        data: 'words='+words,
+        data: 'words='+words+'&page='+$("#allinfo").attr("class"),
         success: function (result) {
             $("#filetable").html(result);
             reBind();

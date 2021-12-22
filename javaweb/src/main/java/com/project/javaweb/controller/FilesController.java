@@ -71,7 +71,7 @@ public class FilesController {
         model.addAttribute("user", user);
         model.addAttribute("filelist", filesList);
         model.addAttribute("page", page);
-        model.addAttribute("pagesum", (pageFiles.getPages()==0)?1:pageFiles.getPages());
+        model.addAttribute("pagesum", (pageFiles.getPages() == 0) ? 1 : pageFiles.getPages());
         model.addAttribute("currentpage", pageNum);
         return "files";
     }
@@ -212,7 +212,7 @@ public class FilesController {
 
         filesList = pageFiles.getRecords();
         model.addAttribute("filelist", filesList);
-        model.addAttribute("pagesum", (pageFiles.getPages()==0)?1:pageFiles.getPages());
+        model.addAttribute("pagesum", (pageFiles.getPages() == 0) ? 1 : pageFiles.getPages());
 
         model.addAttribute("currentpage", pageNum);
         return "files::file_table";
@@ -238,10 +238,9 @@ public class FilesController {
         file.setIspublic(isPublic);
         filesService.insert(file);
 
-
         src.setFileid(file.getId());
         fileSrcService.insert(src);
-        //System.out.println(src.getId() + "." + fileType);
+        // System.out.println(src.getId() + "." + fileType);
         src.setSrc(src.getId() + "." + fileType);
         fileSrcService.update(src);
 
@@ -297,15 +296,15 @@ public class FilesController {
                 } else {
                     pageFiles = filesService.selectByPublic("Public", pageNum);
                 }
-                if(pageFiles.getTotal()==0){
+                if (pageFiles.getTotal() == 0) {
                     break;
                 }
 
                 flag = true;
             } while (pageNum > pageFiles.getPages());
-            
+
             filesList = pageFiles.getRecords();
-            model.addAttribute("pagesum", (pageFiles.getPages()==0)?1:pageFiles.getPages());
+            model.addAttribute("pagesum", (pageFiles.getPages() == 0) ? 1 : pageFiles.getPages());
             model.addAttribute("filelist", filesList);
             model.addAttribute("currentpage", pageNum);
             // System.out.println(pageFiles.getPages());
@@ -451,48 +450,63 @@ public class FilesController {
         return "pagechange";
     }
 
-
     @PostMapping("/search")
-    public String searchFile(@RequestParam("words") String words,Model model){
-        System.out.println(words);
+    public String searchFile(@RequestParam("words") String words, @RequestParam("page") String page, Model model,
+            HttpSession session) {
+        // System.out.println(words);
+        Users user = (Users) session.getAttribute("user");
         List<Files> filelist = new ArrayList<>();
+        List<Files> newfilelist = new ArrayList<>();
 
         filelist = filesService.searchByName(words);
 
-        model.addAttribute("filelist", filelist);
+        for (Files file : filelist) {
+            if (page.equals("home")) {
+                if (file.getOwnerid().equals(user.getId())) {
+                    newfilelist.add(file);
+                }
+            } else {
+                if (file.getIspublic().equals("Public")) {
+                    newfilelist.add(file);
+                }
+            }
+
+        }
+
+        model.addAttribute("filelist", newfilelist);
         model.addAttribute("pagesum", 1);
         model.addAttribute("currentpage", 1);
         return "files::file_table";
     }
 
-
     @PostMapping("/share")
     @ResponseBody
-    public String processShare(@RequestParam("fileid") String fileid) throws UnsupportedEncodingException{
+    public String processShare(@RequestParam("fileid") String fileid) throws UnsupportedEncodingException {
         String url = "/share/";
-        String content = DesUtil.DESEncrypt("Jimmy312", fileid); 
+        String content = DesUtil.DESEncrypt("Jimmy312", fileid);
         url += content;
-        //System.out.println(url);
+        // System.out.println(url);
 
         return url;
     }
 
     @GetMapping("/share/{code}")
-    public String share(@PathVariable("code") String code,HttpSession session,Model model) throws UnsupportedEncodingException{
+    public String share(@PathVariable("code") String code, HttpSession session, Model model)
+            throws UnsupportedEncodingException {
         Users user = (Users) session.getAttribute("user");
 
         Integer fileid;
         String content = DesUtil.DESDecrypt("Jimmy312", code);
-        if(content!=null){
+        if (content != null) {
             fileid = Integer.valueOf(content);
-        }else{
-            model.addAttribute("info","err");
+        } else {
+            model.addAttribute("info", "err");
             return "share";
         }
 
         Files file = filesService.selectById(fileid);
-        if(filesService.selectById(fileid)==null){
-            model.addAttribute("info","err");
+        if (filesService.selectById(fileid) == null) {
+            model.addAttribute("info", "err");
             return "share";
         }
 
@@ -508,7 +522,7 @@ public class FilesController {
             authFileService.update(authFile);
         }
 
-        model.addAttribute("info","ok");
+        model.addAttribute("info", "ok");
         model.addAttribute("file", file);
         model.addAttribute("user", user);
 
