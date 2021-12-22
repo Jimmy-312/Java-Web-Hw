@@ -10,6 +10,7 @@ import com.project.javaweb.service.UsersService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -18,7 +19,7 @@ public class LoginController {
     @Autowired
     private UsersService usersService;
 
-    @RequestMapping("/login")
+    @GetMapping("/login")
     public String displayLogin(HttpSession session) {
         if(session.getAttribute("user")!=null){
             return "redirect:/home/";
