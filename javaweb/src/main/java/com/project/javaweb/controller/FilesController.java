@@ -462,7 +462,7 @@ public class FilesController {
 
         for (Files file : filelist) {
             if (page.equals("home")) {
-                if (file.getOwnerid().equals(user.getId())) {
+                if (authFileService.selectByFileId(file.getId(), user.getId())!=null) {
                     newfilelist.add(file);
                 }
             } else {
