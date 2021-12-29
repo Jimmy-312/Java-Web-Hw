@@ -89,7 +89,6 @@ public class FilesServiceImpl implements FilesService {
         return list;
     }
 
-    @Override
     public List<Files> selectByIds(List<Integer> idList) {
         List<Files> list = new ArrayList<>();
         if (idList.isEmpty()) {
@@ -98,7 +97,6 @@ public class FilesServiceImpl implements FilesService {
         return mapper.selectBatchIds(idList);
     }
 
-    @Override
     public List<Files> selectByPublic(String string) {
         QueryWrapper<Files> wrapper = new QueryWrapper<>();
         wrapper.eq("ispublic", string);
